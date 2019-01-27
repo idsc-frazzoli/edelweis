@@ -46,7 +46,8 @@ public class DependencyGlobal {
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         .filter(ParserJava::isPublic) //
-        .map(ParserJava::identifier).filter(dependency::containsKey) //
+        .map(ParserJava::identifier) //
+        .filter(dependency::containsKey) //
         .filter(identifier -> 0 == dependency.get(identifier));
   }
 

@@ -12,6 +12,7 @@ import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.edelweis.lang.ParserText;
 import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
+import ch.ethz.idsc.edelweis.prc.NameCollisions;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 
 class Main {
@@ -28,6 +29,8 @@ class Main {
     generateTallImages(session);
     // ---
     DependencyGlobal dependencyGlobal = new DependencyGlobal(session.bulkParsers());
+    // ---
+    NameCollisions nameCollisions = new NameCollisions(session.bulkParsers());
     // ---
     HtmlUtf8.index(new File(OUTPUT_ROOT, "index.html"), "Edelweis", "cols=\"200,*\"", "projects.htm", "menu", "some.htm", "project");
     try (HtmlUtf8 menu = HtmlUtf8.page(new File(OUTPUT_ROOT, "projects.htm"), false)) {
@@ -53,6 +56,7 @@ class Main {
             htmlUtf8.append("<a href='external.htm' target='content'>External</a><br/>\n");
             htmlUtf8.append("<a href='lines.htm' target='content'>Lines</a><br/>\n");
             htmlUtf8.append("<a href='ghost.htm' target='content'>Ghost</a><br/>\n");
+            htmlUtf8.append("<a href='names.htm' target='content'>Names</a><br/>\n");
             htmlUtf8.append("<a href='todos.htm' target='content'>Todos</a><br/>\n");
             htmlUtf8.append("<a href='edits.htm' target='content'>Edits</a><br/>\n");
             htmlUtf8.append("<a href='../../tagimage/" + name + ".png' target='content'>Tagimage</a><br/>\n");
@@ -70,6 +74,12 @@ class Main {
             htmlUtf8.append("<h3>Ghost</h3>\n");
             htmlUtf8.append("<pre>\n");
             dependencyGlobal.publicUnref(bulkParser).forEach(htmlUtf8::appendln);
+            htmlUtf8.append("</pre>\n");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "names.htm"), false)) {
+            htmlUtf8.append("<h3>Names</h3>\n");
+            htmlUtf8.append("<pre>\n");
+            nameCollisions.duplicates(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "todos.htm"), false)) {

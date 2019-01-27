@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import ch.ethz.idsc.edelweis.util.Filename;
+
 public class ParserJava extends ParserBase {
   private static final String PACKAGE = "package ";
   private static final String IMPORT = "import ";
@@ -34,6 +36,7 @@ public class ParserJava extends ParserBase {
   // ---
   private final int count;
   private final String identifier;
+  private final String fileName;
   private final Set<String> imports = new HashSet<>();
   private final ClassType classType;
   private final boolean isPublic;
@@ -42,6 +45,7 @@ public class ParserJava extends ParserBase {
 
   public ParserJava(File file) {
     super(file);
+    fileName = new Filename(file).title;
     final List<String> lines = StaticHelper.lines(file);
     hasHeader = !lines.isEmpty() && COMMENT_PREDICATE.test(lines.get(0));
     count = (int) lines.stream().filter(RELEVANT_JAVA).count();
@@ -100,6 +104,11 @@ public class ParserJava extends ParserBase {
   /** @return string of the form "ch.ethz.idsc.tensor.Tensor" */
   public String identifier() {
     return identifier;
+  }
+
+  /** @return string of the form "Tensor" */
+  public String fileName() {
+    return fileName;
   }
 
   public ClassType classType() {
