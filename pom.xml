@@ -3,11 +3,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>ch.ethz.idsc</groupId>
-	<artifactId>eunoia</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<artifactId>edelweis</artifactId>
+	<version>0.0.1</version>
 	<packaging>jar</packaging>
 
-	<name>eunoia</name>
+	<name>edelweis</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
