@@ -14,6 +14,7 @@ buildNumber.properties
 .project
 .classpath
 bin/
+get/
 
 # datahaki
 testall.sh

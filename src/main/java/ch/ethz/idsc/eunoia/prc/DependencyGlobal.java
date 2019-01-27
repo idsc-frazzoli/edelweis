@@ -1,6 +1,7 @@
 // code by jph
 package ch.ethz.idsc.eunoia.prc;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +18,7 @@ public class DependencyGlobal {
   /** import count */
   private final Map<String, Integer> dependency = new HashMap<>();
 
-  public DependencyGlobal(List<BulkParser> bulkParsers) {
+  public DependencyGlobal(Collection<BulkParser> bulkParsers) {
     bulkParsers.stream() //
         .filter(BulkParser::nonTest) //
         .map(BulkParser::codes) //
@@ -40,12 +41,13 @@ public class DependencyGlobal {
         .forEach(_import -> dependency.put(_import, dependency.get(_import) + 1));
   }
 
-  public Stream<ParserJava> publicUnref(BulkParser bulkParser) {
+  public Stream<String> publicUnref(BulkParser bulkParser) {
     return bulkParser.codes().stream() //
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         .filter(ParserJava::isPublic) //
-        .filter(pj -> 0 == dependency.get(pj.identifier())); //
+        .map(ParserJava::identifier).filter(dependency::containsKey) //
+        .filter(identifier -> 0 == dependency.get(identifier));
   }
 
   private Stream<ParserJava> stream(BulkParser bulkParser) {

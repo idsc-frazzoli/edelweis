@@ -97,6 +97,7 @@ public class ParserJava extends ParserBase {
     return count;
   }
 
+  /** @return string of the form "ch.ethz.idsc.tensor.Tensor" */
   public String identifier() {
     return identifier;
   }
