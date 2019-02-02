@@ -1,9 +1,13 @@
 // code by jph
 package ch.ethz.idsc.edelweis;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
+
+import javax.imageio.ImageIO;
 
 import ch.ethz.idsc.edelweis.htm.HtmlUtf8;
 import ch.ethz.idsc.edelweis.lang.ClassType;
@@ -14,19 +18,25 @@ import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.UserName;
+import ch.ethz.idsc.tensor.red.Total;
 
 class Main {
-  private static final File OUTPUT_ROOT = HomeDirectory.Documents("edelweis");
-  public static final File ICONS_OVERVIEW = new File(OUTPUT_ROOT, "icons_overview");
-  public static final File PAGES_ROOT = new File(OUTPUT_ROOT, "pages");
-  public static final File TAGIMAGE = new File(OUTPUT_ROOT, "tagimage");
+  static String smallgray(Object text) {
+    return "<small><font color='#a0a0a0'>" + text + "</font></small>";
+  }
 
   public static void main(String[] args) {
+    Session session = new Session(0 < args.length ? args[0] : UserName.get());
     // FileDelete.of(OUTPUT_ROOT, 2, 500).printNotification();
-    OUTPUT_ROOT.mkdir();
+    File OUTPUT_ROOT = HomeDirectory.Documents("edelweis", session.user);
+    OUTPUT_ROOT.mkdirs();
+    // File ICONS_OVERVIEW = new File(OUTPUT_ROOT, "icons_overview");
+    File PAGES_ROOT = new File(OUTPUT_ROOT, "pages");
+    File TAGIMAGE = new File(OUTPUT_ROOT, "tagimage");
+    TAGIMAGE.mkdir();
     // ---
-    Session session = new Session("test");
-    generateTallImages(session);
+    generateTallImages(TAGIMAGE, session);
     // ---
     DependencyGlobal dependencyGlobal = new DependencyGlobal(session.bulkParsers());
     // ---
@@ -35,10 +45,12 @@ class Main {
     HtmlUtf8.index(new File(OUTPUT_ROOT, "index.html"), "Edelweis", "cols=\"200,*\"", "projects.htm", "menu", "some.htm", "project");
     try (HtmlUtf8 menu = HtmlUtf8.page(new File(OUTPUT_ROOT, "projects.htm"), false)) {
       PAGES_ROOT.mkdir();
+      menu.appendln("<h3>" + session.user + "</h3>");
       for (BulkParser bulkParser : session.bulkParsers()) {
         String name = bulkParser.name();
         String link = name + ".htm";
-        menu.append("<a href='" + PAGES_ROOT.getName() + "/" + link + "' target='project'>" + name + "</a><br/>\n");
+        int size = bulkParser.codes().size();
+        menu.append("<a href='" + PAGES_ROOT.getName() + "/" + link + "' target='project'>" + name + "</a> " + smallgray(size) + "<br/>\n");
         {
           HtmlUtf8.index(new File(PAGES_ROOT, link), "", "cols=\"200,*\"", name + "/menu.htm", "item", name + "/lines.htm", "content");
           File dir = new File(PAGES_ROOT, name);
@@ -54,11 +66,11 @@ class Main {
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "menu.htm"), false)) {
             htmlUtf8.append("<h3>" + name + "</h3>\n");
             htmlUtf8.append("<a href='external.htm' target='content'>External</a><br/>\n");
-            htmlUtf8.append("<a href='lines.htm' target='content'>Lines</a><br/>\n");
-            htmlUtf8.append("<a href='ghost.htm' target='content'>Ghost</a><br/>\n");
-            htmlUtf8.append("<a href='names.htm' target='content'>Names</a><br/>\n");
+            htmlUtf8.append("<a href='lines.htm' target='content'>Lines</a> " + smallgray(Total.of(bulkParser.allLineCounts())) + "<br/>\n");
+            htmlUtf8.append("<a href='ghost.htm' target='content'>Unused</a><br/>\n");
+            htmlUtf8.append("<a href='names.htm' target='content'>Duplicate Names</a><br/>\n");
             htmlUtf8.append("<a href='todos.htm' target='content'>Todos</a><br/>\n");
-            htmlUtf8.append("<a href='edits.htm' target='content'>Edits</a><br/>\n");
+            // htmlUtf8.append("<a href='edits.htm' target='content'>Edits</a><br/>\n");
             htmlUtf8.append("<a href='../../tagimage/" + name + ".png' target='content'>Tagimage</a><br/>\n");
             if (!headerMissing.list.isEmpty())
               htmlUtf8.append("<a href='headermiss.htm' target='content'>Headermiss</a><br/>\n");
@@ -71,13 +83,13 @@ class Main {
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "ghost.htm"), false)) {
-            htmlUtf8.append("<h3>Ghost</h3>\n");
+            htmlUtf8.append("<h3>Unused</h3>\n");
             htmlUtf8.append("<pre>\n");
             dependencyGlobal.publicUnref(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "names.htm"), false)) {
-            htmlUtf8.append("<h3>Names</h3>\n");
+            htmlUtf8.append("<h3>Duplicate Names</h3>\n");
             htmlUtf8.append("<pre>\n");
             nameCollisions.duplicates(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
@@ -171,8 +183,15 @@ class Main {
     }
   }
 
-  static void generateTallImages(Session session) {
-    TAGIMAGE.mkdir();
-    session.bulkParsers().forEach(TagImage::of);
+  static void generateTallImages(File TAGIMAGE, Session session) {
+    for (BulkParser bulkParser : session.bulkParsers()) {
+      BufferedImage bufferedImage = TagImage.of(bulkParser);
+      if (Objects.nonNull(bufferedImage))
+        try {
+          ImageIO.write(bufferedImage, "png", new File(TAGIMAGE, bulkParser.name() + ".png"));
+        } catch (Exception exception) {
+          exception.printStackTrace();
+        }
+    }
   }
 }

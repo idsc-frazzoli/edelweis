@@ -25,10 +25,9 @@ public enum TagImage {
   private static final int HEIGHT = ICON + 4;
   private static final File GET_ICONS = new File("get", "icons");
 
-  public static void of(BulkParser bulkParser) {
+  public static BufferedImage of(BulkParser bulkParser) {
     final String name = bulkParser.name();
     File file = new File(GET_ICONS, name + ".png");
-    // if (file.isFile())
     try {
       BufferedImage iconImage = file.isFile() //
           ? ImageIO.read(file)
@@ -60,9 +59,10 @@ public enum TagImage {
       piy += 30;
       BufferedImage tag = ImageLineCount.generate(bulkParser, SEP_X);
       graphics.drawImage(tag, pix, piy, new JLabel());
-      ImageIO.write(bufferedImage, "png", new File(Main.TAGIMAGE, name + ".png"));
+      return bufferedImage;
     } catch (Exception exception) {
       exception.printStackTrace();
     }
+    return null;
   }
 }

@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Properties;
 
-import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 
 import ch.ethz.idsc.edelweis.util.GraphicsUtil;
@@ -23,7 +22,7 @@ public enum Summary {
   private static final Color LINECOLOR = new Color(230, 230, 230, 255);
   private static final int SEP_X = 200;
 
-  static void process(String title, List<String> PROJ, Map<String, BulkParser> map) throws IOException {
+  static BufferedImage process(String title, List<String> PROJ, Map<String, BulkParser> map) throws IOException {
     System.out.println("PROCESS " + title);
     Properties properties = Import.properties(new File("get", "descriptions.properties"));
     final int width = SEP_X + ImageLineCount.WIDTH;
@@ -59,6 +58,7 @@ public enum Summary {
       graphics.drawLine(0, piy, width, piy);
       piy += 2;
     }
-    ImageIO.write(bufferedImage, "png", new File(Main.ICONS_OVERVIEW, title + ".png"));
+    // ImageIO.write(bufferedImage, "png", new File(Main.ICONS_OVERVIEW, title + ".png"));
+    return bufferedImage;
   }
 }

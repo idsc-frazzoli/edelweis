@@ -14,8 +14,10 @@ import java.util.TreeSet;
 public class Session {
   private final UserProperties userProperties;
   private final Map<String, BulkParser> map = new LinkedHashMap<>();
+  public final String user;
 
   public Session(String user) {
+    this.user = user;
     userProperties = new UserProperties(user);
     // ---
     Properties properties = userProperties.load("projects");
