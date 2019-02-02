@@ -36,4 +36,8 @@ public class NameCollisions {
         .distinct() //
         .sorted();
   }
+
+  public Stream<String> flatMap(String key) {
+    return map.get(key).stream().map(ParserJava::identifier);
+  }
 }
