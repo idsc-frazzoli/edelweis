@@ -18,9 +18,13 @@ class UserProperties {
     this(UserName.get());
   }
 
-  public Properties load(String name) {
+  public File file(String name) {
     File directory = new File("get/user", user);
-    File file = new File(directory, name + ".properties");
+    return new File(directory, name + ".properties");
+  }
+
+  public Properties load(String name) {
+    File file = file(name);
     try {
       return Import.properties(file);
     } catch (Exception exception) {

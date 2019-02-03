@@ -27,7 +27,8 @@ public enum TagImage {
 
   public static BufferedImage of(BulkParser bulkParser) {
     final String name = bulkParser.name();
-    File file = new File(GET_ICONS, name + ".png");
+    String icon = name.endsWith("-test") ? name.substring(0, name.length() - 5) : name;
+    File file = new File(GET_ICONS, icon + ".png");
     try {
       BufferedImage iconImage = file.isFile() //
           ? ImageIO.read(file)
@@ -57,8 +58,10 @@ public enum TagImage {
       graphics.setColor(Color.GRAY);
       graphics.drawString(desc, pix, piy + 27);
       piy += 30;
-      BufferedImage tag = ImageLineCount.generate(bulkParser, SEP_X);
-      graphics.drawImage(tag, pix, piy, new JLabel());
+      if (0 < bulkParser.allLineCounts().length()) {
+        BufferedImage tag = ImageLineCount.generate(bulkParser, SEP_X);
+        graphics.drawImage(tag, pix, piy, new JLabel());
+      }
       return bufferedImage;
     } catch (Exception exception) {
       exception.printStackTrace();

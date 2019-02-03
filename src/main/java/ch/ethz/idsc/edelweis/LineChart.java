@@ -15,8 +15,8 @@ import ch.ethz.idsc.subare.plot.XYDatasets;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
-import ch.ethz.idsc.tensor.alg.Range;
 import ch.ethz.idsc.tensor.alg.Sort;
+import ch.ethz.idsc.tensor.alg.Subdivide;
 import ch.ethz.idsc.tensor.alg.Transpose;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.sca.Log;
@@ -27,11 +27,14 @@ public enum LineChart {
     Map<String, Tensor> map = new LinkedHashMap<>();
     for (BulkParser bulkParser : bulkParsers) {
       Tensor lineCounts = bulkParser.allLineCounts();
-      Tensor tensor = Transpose.of(Tensors.of(Log.of(Range.of(1, lineCounts.length() + 1)), Log.of(Sort.of(lineCounts.map(Max.function(RealScalar.ONE))))));
-      map.put(bulkParser.name(), tensor);
+      if (1 < lineCounts.length()) {
+        Tensor domain = Subdivide.of(0, 1, lineCounts.length() - 1);
+        Tensor tensor = Transpose.of(Tensors.of(domain, Log.of(Sort.of(lineCounts.map(Max.function(RealScalar.ONE))))));
+        map.put(bulkParser.name(), tensor);
+      }
     }
     XYDataset xyDataset = XYDatasets.create(map);
-    ListPlotBuilder listPlotBuilder = new ListPlotBuilder("lines", "file", "lines", xyDataset);
+    ListPlotBuilder listPlotBuilder = new ListPlotBuilder("lines", "files", "log lines", xyDataset);
     JFreeChart jFreeChart = listPlotBuilder.getJFreeChart();
     try {
       ChartUtils.saveChartAsPNG(new File(directory, "lines.png"), jFreeChart, 1024, 768);

@@ -15,13 +15,23 @@ public class Git {
     return "/usr/bin/git";
   }
 
+  public static String version() {
+    try {
+      return StaticHelper.static_process(new ProcessBuilder(getExecutable(), "--version"));
+    } catch (Exception myException) {
+      myException.printStackTrace();
+    }
+    return null;
+  }
+
   // ---
-  public final File directory;
+  private final File directory;
 
   public Git(File directory) {
     this.directory = directory;
-    if (!new File(directory, ".git").exists())
-      System.err.println("warning: .git directory does not exist in given directory");
+    // if (!new File(directory, ".git").exists())
+    // System.err.println("warning: .git directory does not exist in given directory");
+    // ---
     // File gitIgnore = new File(myDirectory, ".gitignore");
     // if (!gitIgnore.exists()) {
     // PrintStream myPrintStream = new PrintStream(gitIgnore);
@@ -32,9 +42,12 @@ public class Git {
     // myManager = new Manager(new File(myDirectory, "sha.properties"));
   }
 
-  public static String version() {
+  public String branch() {
     try {
-      return StaticHelper.static_process(new ProcessBuilder(getExecutable(), "--version"));
+      ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), //
+          "rev-parse", "--abbrev-ref", "HEAD");
+      processBuilder.directory(directory);
+      return StaticHelper.static_process(processBuilder);
     } catch (Exception myException) {
       myException.printStackTrace();
     }
