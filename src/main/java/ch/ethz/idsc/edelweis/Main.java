@@ -3,6 +3,8 @@ package ch.ethz.idsc.edelweis;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,6 +21,7 @@ import ch.ethz.idsc.edelweis.lang.ParserText;
 import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
+import ch.ethz.idsc.edelweis.util.FileDelete;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.red.Total;
@@ -28,10 +31,10 @@ class Main {
     return "<small><font color='#a0a0a0'>" + text + "</font></small>";
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File root = HomeDirectory.Documents("edelweis", session.user);
-    // FileDelete.of(OUTPUT_ROOT, 2, 500).printNotification();
+    FileDelete.of(root, 3, 500).printNotification();
     root.mkdirs();
     // File ICONS_OVERVIEW = new File(OUTPUT_ROOT, "icons_overview");
     final File pages = new File(root, "pages");
@@ -76,17 +79,22 @@ class Main {
               htmlUtf8.appendln("</pre>");
             }
           try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"), false)) {
-            submenu.appendln("<img src='../../tagimage/" + name + ".png'>\n");
+            submenu.appendln("<img src='../../tagimage/" + name + ".png'>");
+            submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
-            submenu.appendln("<tr><td><a href='external.htm' target='content'>External</a>");
             submenu.appendln("<tr><td><a href='lines.htm' target='content'>Lines</a> " + smallgray(Total.of(bulkParser.allLineCounts())));
+            submenu.appendln("<tr><td><a href='dependencies.htm' target='content'>Dependencies</a>");
             // submenu.appendln("<tr><td><a href='../../linechart/" + name + ".png' target='content'>Chart</a>");
-            submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
-            submenu.appendln("<tr><td><a href='names.htm' target='content'>Duplicate Names</a><br/>");
-            submenu.appendln("<tr><td><a href='todos.htm' target='content'>Todos</a><br/>");
+            if (0 < dependencyGlobal.publicUnref(bulkParser).count())
+              submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
+            if (!duplicates.isEmpty())
+              submenu.appendln("<tr><td><a href='names.htm' target='content'>Duplicate Names</a><br/>");
+            if (0 < bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count())
+              submenu.appendln("<tr><td><a href='todos.htm' target='content'>Todos</a><br/>");
             // htmlUtf8.append("<a href='edits.htm' target='content'>Edits</a><br/>\n");
-            if (!headerMissing.list.isEmpty())
-              submenu.append("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>\n");
+            if (session.edelweisConfig.missingHeaders)
+              if (!headerMissing.list.isEmpty())
+                submenu.append("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>\n");
             submenu.appendln("</table>");
           }
           // ---
@@ -108,7 +116,7 @@ class Main {
             for (String key : duplicates) {
               htmlUtf8.appendln("<b>" + key + "</b>");
               nameCollisions.flatMap(key).forEach(htmlUtf8::appendln);
-              htmlUtf8.appendln("");
+              htmlUtf8.appendln();
             }
             htmlUtf8.append("</pre>\n");
           }
@@ -119,8 +127,8 @@ class Main {
               if (!parserText.todos().isEmpty()) {
                 htmlUtf8.append("<b>" + parserText.file() + "</b>\n");
                 parserText.todosNoXml().forEach(htmlUtf8::appendln);
+                htmlUtf8.appendln();
               }
-            // new EditCount(bulkParser).listing().forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "edits.htm"), false)) {
@@ -129,10 +137,10 @@ class Main {
             // new EditCount(bulkParser).listing().forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "external.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "dependencies.htm"), false)) {
             ExtDependencies extDependencies = new ExtDependencies(bulkParser);
             Map<String, Long> set = extDependencies.getAll();
-            htmlUtf8.append("<h3>External</h3>\n");
+            htmlUtf8.append("<h3>Dependencies</h3>\n");
             htmlUtf8.append("<pre>\n");
             set.entrySet().forEach(entry -> htmlUtf8.append(String.format("%5d %s", entry.getValue(), entry.getKey()) + "\n"));
             htmlUtf8.append("</pre>\n");
@@ -142,6 +150,8 @@ class Main {
       menu.appendln("</table>");
       menu.appendln("<hr/>");
       menu.appendln("<a href='lines.png' target='project'>lines</a>");
+      menu.appendln("<hr/>");
+      menu.appendln(new Date());
     }
     // bulkParser.nonTest();
     // TODO show @Override methods that are not final

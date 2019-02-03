@@ -14,6 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.edelweis.git.Git;
 import ch.ethz.idsc.edelweis.lang.ParserC;
 import ch.ethz.idsc.edelweis.lang.ParserCode;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
@@ -31,6 +32,7 @@ public class BulkParser {
   private final File root;
   private final String name;
   private final boolean test;
+  private final String branch;
   private final Properties ignore;
   private final List<ParserCode> codes = new ArrayList<>();
   private final List<ParserText> texts = new ArrayList<>();
@@ -41,11 +43,16 @@ public class BulkParser {
     this.name = name;
     test = name.endsWith("-test");
     this.ignore = ignore;
+    branch = new Git(root).branch().trim();
     visit(root);
   }
 
   public String name() {
     return name;
+  }
+
+  public String branch() {
+    return branch;
   }
 
   private void visit(File directory) {
