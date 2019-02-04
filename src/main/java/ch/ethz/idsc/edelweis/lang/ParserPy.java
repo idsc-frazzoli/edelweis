@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.edelweis.util.ReadLines;
+
 public class ParserPy extends ParserBase {
   private static final String QUOTES = "\"\"\"";
   private static final Predicate<String> RELEVANT = new Predicate<String>() {
@@ -23,7 +25,7 @@ public class ParserPy extends ParserBase {
 
   public ParserPy(File file) {
     super(file);
-    List<String> list = StaticHelper.lines(file).stream().filter(RELEVANT).collect(Collectors.toList());
+    List<String> list = ReadLines.of(file).stream().filter(RELEVANT).collect(Collectors.toList());
     boolean isActive = true;
     for (String line : list) {
       isActive ^= line.startsWith(QUOTES);

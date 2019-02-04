@@ -34,6 +34,7 @@ public class BulkParser {
   private final boolean test;
   private final String branch;
   private final Properties ignore;
+  private final Git git;
   private final List<ParserCode> codes = new ArrayList<>();
   private final List<ParserText> texts = new ArrayList<>();
   private final Set<String> extensions = new TreeSet<>();
@@ -43,7 +44,8 @@ public class BulkParser {
     this.name = name;
     test = name.endsWith("-test");
     this.ignore = ignore;
-    branch = new Git(root).branch().trim();
+    git = new Git(root);
+    branch = git.branch();
     visit(root);
   }
 
@@ -53,6 +55,14 @@ public class BulkParser {
 
   public String branch() {
     return branch;
+  }
+
+  public String log() {
+    return git.log();
+  }
+
+  public boolean isClean() {
+    return git.isClean();
   }
 
   private void visit(File directory) {

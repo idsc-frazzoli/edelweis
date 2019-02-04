@@ -8,6 +8,8 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.edelweis.util.ReadLines;
+
 public class ParserText extends ParserBase {
   private static final Predicate<String> UNFINISHED = new Predicate<String>() {
     @Override
@@ -24,7 +26,7 @@ public class ParserText extends ParserBase {
 
   public ParserText(File file) {
     super(file);
-    todos = StaticHelper.lines(file).stream().filter(UNFINISHED).collect(Collectors.toList());
+    todos = ReadLines.of(file).stream().filter(UNFINISHED).collect(Collectors.toList());
   }
 
   @Override
