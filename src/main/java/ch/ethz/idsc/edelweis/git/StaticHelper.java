@@ -2,6 +2,9 @@
 package ch.ethz.idsc.edelweis.git;
 
 import java.io.InputStream;
+import java.util.List;
+
+import ch.ethz.idsc.edelweis.util.ReadLines;
 
 /* package */ enum StaticHelper {
   ;
@@ -12,6 +15,16 @@ import java.io.InputStream;
       byte[] data = new byte[inputStream.available()];
       inputStream.read(data);
       return new String(data);
+    }
+  }
+
+  static List<String> static_process_lines(ProcessBuilder processBuilder) throws Exception {
+    Process process = processBuilder.start();
+    // System.out.println("spl waitfor beg");
+    // process.waitFor();
+    // System.out.println("spl waitfor end");
+    try (InputStream inputStream = process.getInputStream()) {
+      return ReadLines.of(inputStream);
     }
   }
 }

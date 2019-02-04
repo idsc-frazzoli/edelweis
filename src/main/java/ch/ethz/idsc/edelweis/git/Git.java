@@ -2,6 +2,7 @@
 package ch.ethz.idsc.edelweis.git;
 
 import java.io.File;
+import java.util.List;
 
 /** configuration required prior use
  * 
@@ -42,17 +43,64 @@ public class Git {
     // myManager = new Manager(new File(myDirectory, "sha.properties"));
   }
 
+  public List<String> log() {
+    try {
+      ProcessBuilder processBuilder = new ProcessBuilder( //
+          "git", "log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
+      processBuilder.directory(directory);
+      return StaticHelper.static_process_lines(processBuilder);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    return null;
+  }
+
+  public List<String> logSha1() {
+    try {
+      ProcessBuilder processBuilder = new ProcessBuilder( //
+          "git", "log", "--no-merges", "--pretty=format:%ad %H", "--date=short");
+      processBuilder.directory(directory);
+      return StaticHelper.static_process_lines(processBuilder);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    return null;
+  }
+
   public String branch() {
     try {
       ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), //
           "rev-parse", "--abbrev-ref", "HEAD");
       processBuilder.directory(directory);
-      return StaticHelper.static_process(processBuilder);
-    } catch (Exception myException) {
-      myException.printStackTrace();
+      return StaticHelper.static_process(processBuilder).trim();
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
     return null;
   }
+
+  public String currentCommitSha1() {
+    try {
+      ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), "rev-parse", "HEAD");
+      processBuilder.directory(directory);
+      return StaticHelper.static_process(processBuilder).trim();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    return null;
+  }
+
+  public boolean isClean() {
+    try {
+      ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), "status", "-s");
+      processBuilder.directory(directory);
+      return StaticHelper.static_process(processBuilder).trim().isEmpty();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    return false;
+  }
+
   // private void init() throws Exception {
   // process(new ProcessBuilder(getExecutable(), "init"));
   // }
@@ -75,7 +123,6 @@ public class Git {
   // myList.add(myStringTokenizer.nextToken());
   // return myList;
   // }
-
   // public void manifest() throws Exception {
   // String myPrev = revParse();
   // add_A();
@@ -93,7 +140,6 @@ public class Git {
   }
 
   public void checkout(String string) throws Exception {
-    // System.out.println("checkout "+myString);
     process(new ProcessBuilder(getExecutable(), "checkout", string));
   }
 

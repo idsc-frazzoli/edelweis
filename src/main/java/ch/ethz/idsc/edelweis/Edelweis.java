@@ -26,15 +26,18 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.red.Total;
 
-class Main {
+public class Edelweis {
   static String smallgray(Object text) {
     return "<small><font color='#a0a0a0'>" + text + "</font></small>";
   }
 
   public static void main(String[] args) throws IOException {
+    args = new String[] { "test" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
+    session.build();
     final File root = HomeDirectory.Documents("edelweis", session.user);
-    FileDelete.of(root, 3, 500).printNotification();
+    if (root.isDirectory())
+      FileDelete.of(root, 3, 500).printNotification();
     root.mkdirs();
     // File ICONS_OVERVIEW = new File(OUTPUT_ROOT, "icons_overview");
     final File pages = new File(root, "pages");
@@ -95,13 +98,14 @@ class Main {
             if (session.edelweisConfig.missingHeaders)
               if (!headerMissing.list.isEmpty())
                 submenu.append("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>\n");
+            submenu.appendln("<tr><td><a href='commits.htm' target='content'>Commits</a>");
             submenu.appendln("</table>");
           }
           // ---
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "lines.htm"), false)) {
             htmlUtf8.appendln("<h3>Lines</h3>");
             htmlUtf8.appendln("<pre>");
-            LinesLister.of(bulkParser).forEach(htmlUtf8::appendln);
+            LinesLister.html(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "ghost.htm"), false)) {
@@ -143,6 +147,12 @@ class Main {
             htmlUtf8.append("<h3>Dependencies</h3>\n");
             htmlUtf8.append("<pre>\n");
             set.entrySet().forEach(entry -> htmlUtf8.append(String.format("%5d %s", entry.getValue(), entry.getKey()) + "\n"));
+            htmlUtf8.append("</pre>\n");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "commits.htm"), false)) {
+            htmlUtf8.append("<h3>Commits</h3>\n");
+            htmlUtf8.append("<pre>\n");
+            bulkParser.log().stream().forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
         }

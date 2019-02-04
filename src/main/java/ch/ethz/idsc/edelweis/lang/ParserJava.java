@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import ch.ethz.idsc.edelweis.util.Filename;
+import ch.ethz.idsc.edelweis.util.ReadLines;
 
 public class ParserJava extends ParserBase {
   private static final String PACKAGE = "package ";
@@ -46,7 +47,7 @@ public class ParserJava extends ParserBase {
   public ParserJava(File file) {
     super(file);
     fileName = new Filename(file).title;
-    final List<String> lines = StaticHelper.lines(file);
+    final List<String> lines = ReadLines.of(file);
     hasHeader = !lines.isEmpty() && COMMENT_PREDICATE.test(lines.get(0));
     count = (int) lines.stream().filter(RELEVANT_JAVA).count();
     // if (file.getName().equals("CsvFormat.java")) {

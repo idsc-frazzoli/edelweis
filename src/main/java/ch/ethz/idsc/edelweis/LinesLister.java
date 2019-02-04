@@ -23,4 +23,14 @@ public enum LinesLister {
           return String.format("%5d %s", parserCode.lineCount(), name);
         });
   }
+
+  public static Stream<String> html(BulkParser bulkParser) {
+    return bulkParser.codes().stream() //
+        .sorted(COMPARATOR) //
+        .map(parserCode -> {
+          String name = bulkParser.name(parserCode.file());
+          return String.format("%5d <a href='file://%s'>%s</a>", //
+              parserCode.lineCount(), parserCode.file().toString(), name);
+        });
+  }
 }

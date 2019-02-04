@@ -4,6 +4,8 @@ package ch.ethz.idsc.edelweis.lang;
 import java.io.File;
 import java.util.function.Predicate;
 
+import ch.ethz.idsc.edelweis.util.ReadLines;
+
 public class ParserC extends ParserBase {
   private static final Predicate<String> RELEVANT = new Predicate<String>() {
     @Override
@@ -22,7 +24,7 @@ public class ParserC extends ParserBase {
 
   public ParserC(File file) {
     super(file);
-    count = (int) StaticHelper.lines(file).stream().filter(RELEVANT).count();
+    count = (int) ReadLines.of(file).stream().filter(RELEVANT).count();
   }
 
   @Override // from ParserCode
