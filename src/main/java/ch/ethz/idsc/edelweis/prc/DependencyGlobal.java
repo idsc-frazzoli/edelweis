@@ -62,7 +62,10 @@ public class DependencyGlobal {
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         // .filter(pj -> 0 < map.get(pj.identifier())) //
-        .forEach(parserJava -> map.put(parserJava, dependency.get(parserJava.identifier())));
+        // .filter(Optional::isPresent) //
+        // .map(Optional::get) //
+        .filter(pj -> pj.identifier().isPresent()) //
+        .forEach(parserJava -> map.put(parserJava, dependency.get(parserJava.identifier().get())));
     return map.entrySet().stream() //
         .sorted(EntrySort.INSTANCE) //
         .map(Entry::getKey) //
@@ -71,11 +74,15 @@ public class DependencyGlobal {
 
   public Stream<String> print(BulkParser bulkParser) {
     return stream(bulkParser).map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .map(string -> String.format("%5d %s", dependency.get(string), string));
   }
 
   public Tensor getRefs(BulkParser bulkParser) {
     return Tensor.of(stream(bulkParser).map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .map(dependency::get).map(RealScalar::of));
   }
 }

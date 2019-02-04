@@ -1,13 +1,12 @@
 // code by jph
 package ch.ethz.idsc.edelweis.git;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.StringReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
 import java.util.StringTokenizer;
@@ -49,10 +48,9 @@ public class FileLog {
         "git", "log", "--no-merges", "--pretty=format:%ad %ce %h %s", "--date=short", "--", file.toString());
     processBuilder.directory(file.getParentFile());
     try {
-      String output = StaticHelper.static_process(processBuilder);
-      try (BufferedReader bufferedReader = new BufferedReader(new StringReader(output))) {
-        return new FileLog(bufferedReader.lines());
-      }
+      List<String> output = StaticHelper.static_process_lines(processBuilder);
+      // try (BufferedReader bufferedReader = new BufferedReader(new StringReader(output))) {
+      return new FileLog(output.stream());
     } catch (Exception exception) {
       exception.printStackTrace();
     }

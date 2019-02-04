@@ -10,9 +10,11 @@ import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 
 import ch.ethz.idsc.edelweis.Session;
+import ch.ethz.idsc.edelweis.git.Git;
 import ch.ethz.idsc.edelweis.util.XYSeriesCollectionBuilder;
 import ch.ethz.idsc.subare.plot.ListPlotBuilder;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.tensor.io.UserName;
 
 enum HistorySummary {
   ;
@@ -20,7 +22,16 @@ enum HistorySummary {
   private static final Dimension _16_9_1280 = new Dimension(1280, 720);
 
   public static void main(String[] args) throws IOException {
-    Session session = new Session("test");
+    // args = new String[] { "stpbase" };
+    Session session = new Session(0 < args.length ? args[0] : UserName.get());
+    // ---
+    for (String project : new TreeSet<>(session.projects.stringPropertyNames())) {
+      System.out.println("project=" + project);
+      File root = new File(session.projects.getProperty(project));
+      Git git = new Git(root);
+      if (!git.isClean())
+        throw new RuntimeException();
+    }
     XYSeriesCollectionBuilder lines = new XYSeriesCollectionBuilder();
     XYSeriesCollectionBuilder files = new XYSeriesCollectionBuilder();
     XYSeriesCollectionBuilder ratio = new XYSeriesCollectionBuilder();

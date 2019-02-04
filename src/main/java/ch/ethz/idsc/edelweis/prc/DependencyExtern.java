@@ -49,6 +49,8 @@ public class DependencyExtern {
             .collect(Collectors.toList());
         list.stream() //
             .map(ParserJava::identifier) //
+            .filter(Optional::isPresent) //
+            .map(Optional::get) //
             .forEach(s -> System.out.println(String.format("%5d %s", map.get(s), s)));
       }
     }

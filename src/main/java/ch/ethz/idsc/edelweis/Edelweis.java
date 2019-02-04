@@ -21,6 +21,7 @@ import ch.ethz.idsc.edelweis.lang.ParserText;
 import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
+import ch.ethz.idsc.edelweis.prc.NoIdentifier;
 import ch.ethz.idsc.edelweis.util.FileDelete;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.UserName;
@@ -31,6 +32,7 @@ public class Edelweis {
     return "<small><font color='#a0a0a0'>" + text + "</font></small>";
   }
 
+  // TODO list duplicates in central page (not per project)
   public static void main(String[] args) throws IOException {
     args = new String[] { "test" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
@@ -86,7 +88,8 @@ public class Edelweis {
             submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
             submenu.appendln("<tr><td><a href='lines.htm' target='content'>Lines</a> " + smallgray(Total.of(bulkParser.allLineCounts())));
-            submenu.appendln("<tr><td><a href='dependencies.htm' target='content'>Dependencies</a>");
+            if (!new ExtDependencies(bulkParser).getAll().isEmpty())
+              submenu.appendln("<tr><td><a href='dependencies.htm' target='content'>Dependencies</a>");
             // submenu.appendln("<tr><td><a href='../../linechart/" + name + ".png' target='content'>Chart</a>");
             if (0 < dependencyGlobal.publicUnref(bulkParser).count())
               submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
@@ -97,7 +100,9 @@ public class Edelweis {
             // htmlUtf8.append("<a href='edits.htm' target='content'>Edits</a><br/>\n");
             if (session.edelweisConfig.missingHeaders)
               if (!headerMissing.list.isEmpty())
-                submenu.append("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>\n");
+                submenu.appendln("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>");
+            if (NoIdentifier.of(bulkParser).findAny().isPresent())
+              submenu.appendln("<tr><td><a href='noid.htm' target='content'>No Identifier</a><br/>");
             submenu.appendln("<tr><td><a href='commits.htm' target='content'>Commits</a>");
             submenu.appendln("</table>");
           }
@@ -146,7 +151,13 @@ public class Edelweis {
             Map<String, Long> set = extDependencies.getAll();
             htmlUtf8.append("<h3>Dependencies</h3>\n");
             htmlUtf8.append("<pre>\n");
-            set.entrySet().forEach(entry -> htmlUtf8.append(String.format("%5d %s", entry.getValue(), entry.getKey()) + "\n"));
+            set.entrySet().forEach(entry -> htmlUtf8.appendln(String.format("%5d %s", entry.getValue(), entry.getKey())));
+            htmlUtf8.append("</pre>\n");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "noid.htm"), false)) {
+            htmlUtf8.append("<h3>No Identifier</h3>\n");
+            htmlUtf8.append("<pre>\n");
+            NoIdentifier.of(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "commits.htm"), false)) {
