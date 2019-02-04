@@ -18,16 +18,20 @@ public class Session {
   public final EdelweisConfig edelweisConfig;
   private final Map<String, BulkParser> map = new LinkedHashMap<>();
   public final String user;
+  public final Properties projects;
+  public final Properties ignore;
 
   public Session(String user) {
     this.user = user;
     userProperties = new UserProperties(user);
     edelweisConfig = TensorProperties.wrap(new EdelweisConfig()).tryLoad(userProperties.file("config"));
-    // ---
-    Properties properties = userProperties.load("projects");
-    Properties ignore = userProperties.load("ignore");
-    for (String project : new TreeSet<>(properties.stringPropertyNames()))
-      map.put(project, new BulkParser(new File(properties.getProperty(project)), project, ignore));
+    projects = userProperties.load("projects");
+    ignore = userProperties.load("ignore");
+  }
+
+  public void build() {
+    for (String project : new TreeSet<>(projects.stringPropertyNames()))
+      map.put(project, new BulkParser(new File(projects.getProperty(project)), project, ignore));
   }
 
   public List<BulkParserPair> testPairs() {

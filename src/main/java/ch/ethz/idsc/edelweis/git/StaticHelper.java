@@ -20,7 +20,9 @@ import ch.ethz.idsc.edelweis.util.ReadLines;
 
   static List<String> static_process_lines(ProcessBuilder processBuilder) throws Exception {
     Process process = processBuilder.start();
-    process.waitFor();
+    // System.out.println("spl waitfor beg");
+    // process.waitFor();
+    // System.out.println("spl waitfor end");
     try (InputStream inputStream = process.getInputStream()) {
       return ReadLines.of(inputStream);
     }

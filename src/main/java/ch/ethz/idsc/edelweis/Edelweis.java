@@ -34,6 +34,7 @@ public class Edelweis {
   public static void main(String[] args) throws IOException {
     args = new String[] { "test" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
+    session.build();
     final File root = HomeDirectory.Documents("edelweis", session.user);
     if (root.isDirectory())
       FileDelete.of(root, 3, 500).printNotification();

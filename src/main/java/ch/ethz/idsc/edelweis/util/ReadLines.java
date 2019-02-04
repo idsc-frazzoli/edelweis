@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 public enum ReadLines {
   ;
   public static List<String> of(InputStream inputStream) {
+    // System.out.println("readlines");
     return new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.toList());
   }
 

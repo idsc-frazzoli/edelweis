@@ -187,4 +187,8 @@ public class BulkParser {
   public Set<String> unknownExtensions() {
     return Collections.unmodifiableSet(extensions);
   }
+
+  public int totalLineCount() {
+    return codes.stream().mapToInt(ParserCode::lineCount).sum();
+  }
 }

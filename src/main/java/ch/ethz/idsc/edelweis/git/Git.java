@@ -55,10 +55,33 @@ public class Git {
     return null;
   }
 
+  public List<String> logSha1() {
+    try {
+      ProcessBuilder processBuilder = new ProcessBuilder( //
+          "git", "log", "--no-merges", "--pretty=format:%ad %H", "--date=short");
+      processBuilder.directory(directory);
+      return StaticHelper.static_process_lines(processBuilder);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    return null;
+  }
+
   public String branch() {
     try {
       ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), //
           "rev-parse", "--abbrev-ref", "HEAD");
+      processBuilder.directory(directory);
+      return StaticHelper.static_process(processBuilder).trim();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    return null;
+  }
+
+  public String currentCommitSha1() {
+    try {
+      ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), "rev-parse", "HEAD");
       processBuilder.directory(directory);
       return StaticHelper.static_process(processBuilder).trim();
     } catch (Exception exception) {
