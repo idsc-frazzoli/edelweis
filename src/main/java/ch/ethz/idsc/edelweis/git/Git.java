@@ -2,6 +2,7 @@
 package ch.ethz.idsc.edelweis.git;
 
 import java.io.File;
+import java.util.List;
 
 /** configuration required prior use
  * 
@@ -42,12 +43,12 @@ public class Git {
     // myManager = new Manager(new File(myDirectory, "sha.properties"));
   }
 
-  public String log() {
+  public List<String> log() {
     try {
       ProcessBuilder processBuilder = new ProcessBuilder( //
           "git", "log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
       processBuilder.directory(directory);
-      return StaticHelper.static_process(processBuilder);
+      return StaticHelper.static_process_lines(processBuilder);
     } catch (Exception exception) {
       exception.printStackTrace();
     }

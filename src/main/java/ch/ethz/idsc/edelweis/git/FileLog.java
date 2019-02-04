@@ -126,7 +126,6 @@ public class FileLog {
 
   public static void main(String[] args) {
     File directory = HomeDirectory.file("Projects/retina");
-    Git git = new Git(directory);
     File file = new File(directory, "src/main/java/ch/ethz/idsc/gokart/core/AutoboxSocket.java");
     FileLog fileLog = FileLog.getDetailed(file);
     System.out.println(fileLog.committer);

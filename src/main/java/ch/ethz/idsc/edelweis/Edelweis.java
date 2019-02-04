@@ -104,7 +104,7 @@ public class Edelweis {
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "lines.htm"), false)) {
             htmlUtf8.appendln("<h3>Lines</h3>");
             htmlUtf8.appendln("<pre>");
-            LinesLister.of(bulkParser).forEach(htmlUtf8::appendln);
+            LinesLister.html(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "ghost.htm"), false)) {
@@ -151,7 +151,7 @@ public class Edelweis {
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "commits.htm"), false)) {
             htmlUtf8.append("<h3>Commits</h3>\n");
             htmlUtf8.append("<pre>\n");
-            htmlUtf8.append(bulkParser.log());
+            bulkParser.log().stream().forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
         }

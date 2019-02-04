@@ -57,7 +57,7 @@ public class BulkParser {
     return branch;
   }
 
-  public String log() {
+  public List<String> log() {
     return git.log();
   }
 
