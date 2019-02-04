@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -26,6 +27,8 @@ public class DependencyGlobal {
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         .map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .forEach(identifier -> dependency.put(identifier, 0));
     // ---
     // global usage
@@ -47,6 +50,8 @@ public class DependencyGlobal {
         .map(ParserJava.class::cast) //
         .filter(ParserJava::isPublic) //
         .map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .filter(dependency::containsKey) //
         .filter(identifier -> 0 == dependency.get(identifier));
   }

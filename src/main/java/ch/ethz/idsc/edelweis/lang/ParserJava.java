@@ -83,8 +83,7 @@ public class ParserJava extends ParserBase {
       String string = optional.get();
       identifier = string + "." + name;
     } else {
-      System.err.println("nocid: " + file);
-      identifier = file.toString();
+      identifier = null;
     }
     // ---
     try {
@@ -103,8 +102,8 @@ public class ParserJava extends ParserBase {
   }
 
   /** @return string of the form "ch.ethz.idsc.tensor.Tensor" */
-  public String identifier() {
-    return identifier;
+  public Optional<String> identifier() {
+    return Optional.ofNullable(identifier);
   }
 
   /** @return string of the form "Tensor" */

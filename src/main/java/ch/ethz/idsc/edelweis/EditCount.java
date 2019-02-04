@@ -3,6 +3,7 @@ package ch.ethz.idsc.edelweis;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.edelweis.git.FileLog;
@@ -17,7 +18,9 @@ public class EditCount {
       if (parserCode instanceof ParserJava) {
         ParserJava parserJava = (ParserJava) parserCode;
         FileLog fileLog = FileLog.getDetailed(parserJava.file());
-        map.put(parserJava.identifier(), fileLog.getTotalEdits());
+        Optional<String> optional = parserJava.identifier();
+        if (optional.isPresent())
+          map.put(optional.get(), fileLog.getTotalEdits());
         // System.out.println(fileLog.getTotalEdits() + " " + parserJava.identifier());
       }
     }

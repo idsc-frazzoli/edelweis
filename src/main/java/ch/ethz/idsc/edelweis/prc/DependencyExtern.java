@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,8 @@ public class DependencyExtern {
           .filter(ParserJava.class::isInstance) //
           .map(ParserJava.class::cast) //
           .map(ParserJava::identifier) //
+          .filter(Optional::isPresent) //
+          .map(Optional::get) //
           .forEach(identifier -> map.put(identifier, 0));
       if (!map.isEmpty()) {
         System.out.println("---\n" + bulkParser.root());
@@ -37,8 +40,9 @@ public class DependencyExtern {
         bulkParser.codes().stream() //
             .filter(ParserJava.class::isInstance) //
             .map(ParserJava.class::cast) //
-            .filter(pj -> 0 < map.get(pj.identifier())) //
-            .forEach(pj -> here.put(pj, map.get(pj.identifier())));
+            .filter(pj -> pj.identifier().isPresent()) //
+            .filter(pj -> 0 < map.get(pj.identifier().get())) //
+            .forEach(pj -> here.put(pj, map.get(pj.identifier().get())));
         List<ParserJava> list = here.entrySet().stream() //
             .sorted((e1, e2) -> Integer.compare(e2.getValue(), e1.getValue())) //
             .map(Entry::getKey) //

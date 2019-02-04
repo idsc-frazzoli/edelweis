@@ -4,6 +4,7 @@ package ch.ethz.idsc.edelweis.prc;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,6 +39,9 @@ public class NameCollisions {
   }
 
   public Stream<String> flatMap(String key) {
-    return map.get(key).stream().map(ParserJava::identifier);
+    return map.get(key).stream() //
+        .map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get);
   }
 }
