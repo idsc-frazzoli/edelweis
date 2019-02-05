@@ -2,6 +2,7 @@
 package ch.ethz.idsc.edelweis.lang;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -25,7 +26,12 @@ public class ParserPy extends ParserBase {
 
   public ParserPy(File file) {
     super(file);
-    List<String> list = ReadLines.of(file).stream().filter(RELEVANT).collect(Collectors.toList());
+    List<String> list = new ArrayList<>();
+    try {
+      list = ReadLines.stream(file).filter(RELEVANT).collect(Collectors.toList());
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
     boolean isActive = true;
     for (String line : list) {
       isActive ^= line.startsWith(QUOTES);

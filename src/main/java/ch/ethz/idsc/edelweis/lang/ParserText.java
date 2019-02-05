@@ -2,6 +2,7 @@
 package ch.ethz.idsc.edelweis.lang;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -22,11 +23,15 @@ public class ParserText extends ParserBase {
     }
   };
   // ---
-  private final List<String> todos;
+  private List<String> todos = new ArrayList<>();
 
   public ParserText(File file) {
     super(file);
-    todos = ReadLines.of(file).stream().filter(UNFINISHED).collect(Collectors.toList());
+    try {
+      todos = ReadLines.stream(file).filter(UNFINISHED).collect(Collectors.toList());
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
   }
 
   @Override

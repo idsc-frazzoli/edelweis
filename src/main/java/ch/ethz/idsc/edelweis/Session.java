@@ -18,16 +18,16 @@ public class Session {
   public final EdelweisConfig edelweisConfig;
   private final Map<String, BulkParser> map = new LinkedHashMap<>();
   public final String user;
-  public final Properties history;
   public final Properties projects;
+  public final Properties history;
   public final Properties ignore;
 
   public Session(String user) {
     this.user = user;
     userProperties = new UserProperties(user);
     edelweisConfig = TensorProperties.wrap(new EdelweisConfig()).tryLoad(userProperties.file("config"));
-    history = userProperties.load("history");
     projects = userProperties.load("projects");
+    history = userProperties.load("history");
     ignore = userProperties.load("ignore");
   }
 

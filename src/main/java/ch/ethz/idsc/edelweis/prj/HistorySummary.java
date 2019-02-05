@@ -25,9 +25,9 @@ enum HistorySummary {
     // args = new String[] { "stpbase" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     // ---
-    for (String project : new TreeSet<>(session.projects.stringPropertyNames())) {
+    for (String project : new TreeSet<>(session.history.stringPropertyNames())) {
       System.out.println("project=" + project);
-      File root = new File(session.projects.getProperty(project));
+      File root = new File(session.history.getProperty(project));
       Git git = new Git(root);
       if (!git.isClean())
         throw new RuntimeException();
@@ -35,9 +35,9 @@ enum HistorySummary {
     XYSeriesCollectionBuilder lines = new XYSeriesCollectionBuilder();
     XYSeriesCollectionBuilder files = new XYSeriesCollectionBuilder();
     XYSeriesCollectionBuilder ratio = new XYSeriesCollectionBuilder();
-    for (String project : new TreeSet<>(session.projects.stringPropertyNames())) {
+    for (String project : new TreeSet<>(session.history.stringPropertyNames())) {
       System.out.println("project=" + project);
-      File root = new File(session.projects.getProperty(project));
+      File root = new File(session.history.getProperty(project));
       ProjectHistory projectHistory = new ProjectHistory(root, project, session.ignore);
       lines.add(project, projectHistory.lineCount());
       files.add(project, projectHistory.fileCount());
