@@ -20,7 +20,7 @@ public class ParserMatlab extends ParserBase {
   public ParserMatlab(File file) {
     super(file);
     try {
-      count = (int) ReadLines.stream(file).filter(RELEVANT).count();
+      count = (int) ReadLines.of(file).stream().filter(RELEVANT).count();
     } catch (Exception exception) {
       exception.printStackTrace();
     }

@@ -72,10 +72,8 @@ public class BulkParser {
     }
     List<File> collect = Stream.of(directory.listFiles()).sorted().collect(Collectors.toList());
     for (final File file : collect) {
-      if (ignore.containsKey(file.toString())) {
-        System.err.println("ignore: " + file);
+      if (ignore.containsKey(file.toString()))
         continue;
-      }
       if (file.isDirectory()) {
         if (file.getName().equals(".git"))
           continue;

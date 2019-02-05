@@ -36,7 +36,7 @@ public class ProjectHistory {
   private final NavigableMap<Integer, String> navigableMap = new TreeMap<>();
   private final NavigableMap<Integer, BulkParser> bulkParsers = new TreeMap<>();
 
-  public ProjectHistory(File root, String name, Properties ignore) {
+  public ProjectHistory(File root, String name, Properties ignore, String cutoff) {
     git = new Git(root);
     if (!git.isClean())
       throw new RuntimeException();
@@ -47,15 +47,16 @@ public class ProjectHistory {
       StringTokenizer stringTokenizer = new StringTokenizer(line);
       String date = stringTokenizer.nextToken();
       String sha1 = stringTokenizer.nextToken();
-      try {
-        int days = (int) TimeUnit.DAYS.convert( //
-            DATE_FORMAT.parse(date).getTime() - DATE.getTime(), //
-            TimeUnit.MILLISECONDS);
-        if (!navigableMap.containsKey(days))
-          navigableMap.put(days, sha1);
-      } catch (Exception exception) {
-        new RuntimeException();
-      }
+      if (cutoff.compareTo(date) < 0)
+        try {
+          int days = (int) TimeUnit.DAYS.convert( //
+              DATE_FORMAT.parse(date).getTime() - DATE.getTime(), //
+              TimeUnit.MILLISECONDS);
+          if (!navigableMap.containsKey(days))
+            navigableMap.put(days, sha1);
+        } catch (Exception exception) {
+          new RuntimeException();
+        }
     }
     System.out.println("start days ago: " + navigableMap.firstKey());
     int ago = 0;

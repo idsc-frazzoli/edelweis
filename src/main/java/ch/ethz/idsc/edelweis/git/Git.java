@@ -52,23 +52,23 @@ public class Git {
   }
 
   public List<String> log() {
-    return query("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
+    return git("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
   }
 
   public List<String> logSha1() {
-    return query("log", "--no-merges", "--pretty=format:%ad %H", "--date=short");
+    return git("log", "--no-merges", "--pretty=format:%ad %H", "--date=short");
   }
 
   public String branch() {
-    return query("rev-parse", "--abbrev-ref", "HEAD").get(0);
+    return git("rev-parse", "--abbrev-ref", "HEAD").get(0);
   }
 
   public String currentCommitSha1() {
-    return query("rev-parse", "HEAD").get(0);
+    return git("rev-parse", "HEAD").get(0);
   }
 
   public boolean isClean() {
-    return query("status", "-s").isEmpty();
+    return git("status", "-s").isEmpty();
   }
 
   public void checkout(String string) throws Exception {
@@ -108,7 +108,7 @@ public class Git {
   // myManager.manifest();
   // }
   // }
-  private List<String> query(String... strings) {
+  private List<String> git(String... strings) {
     List<String> list = new ArrayList<>();
     list.add(getExecutable());
     list.addAll(Arrays.asList(strings));

@@ -28,7 +28,7 @@ public class ParserText extends ParserBase {
   public ParserText(File file) {
     super(file);
     try {
-      todos = ReadLines.stream(file).filter(UNFINISHED).collect(Collectors.toList());
+      todos = ReadLines.of(file).stream().filter(UNFINISHED).collect(Collectors.toList());
     } catch (Exception exception) {
       exception.printStackTrace();
     }

@@ -78,7 +78,6 @@ public class ParserJava extends ParserBase {
         isPublic = true;
         isAbstract = false;
         classType = null;
-        System.err.println("nodef: " + file);
       }
     }
     // build identifier, for instance ch.ethz.idsc.subare.core.DiscountFunction

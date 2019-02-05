@@ -25,7 +25,7 @@ public class ParserC extends ParserBase {
   public ParserC(File file) {
     super(file);
     try {
-      count = (int) ReadLines.stream(file).filter(RELEVANT).count();
+      count = (int) ReadLines.of(file).stream().filter(RELEVANT).count();
     } catch (Exception exception) {
       exception.printStackTrace();
     }

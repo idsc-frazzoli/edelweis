@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeSet;
 
+import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.TensorProperties;
 
 public class Session {
@@ -21,6 +22,7 @@ public class Session {
   public final Properties projects;
   public final Properties history;
   public final Properties ignore;
+  private final Properties cutoff;
 
   public Session(String user) {
     this.user = user;
@@ -28,6 +30,7 @@ public class Session {
     edelweisConfig = TensorProperties.wrap(new EdelweisConfig()).tryLoad(userProperties.file("config"));
     projects = userProperties.load("projects");
     history = userProperties.load("history");
+    cutoff = userProperties.load("cutoff");
     ignore = userProperties.load("ignore");
   }
 
@@ -47,6 +50,12 @@ public class Session {
     return list;
   }
 
+  public String cutoff(String project) {
+    return cutoff.containsKey(project) //
+        ? cutoff.getProperty(project)
+        : "";
+  }
+
   public Collection<BulkParser> bulkParsers() {
     return map.values();
   }
@@ -62,5 +71,11 @@ public class Session {
       System.out.println(" test=" + bulkParser.nonTest());
       System.out.println(" skip=" + bulkParser.unknownExtensions());
     }
+  }
+
+  public File exportFolder() {
+    File file = HomeDirectory.Documents("edelweis", user);
+    file.mkdirs();
+    return file;
   }
 }

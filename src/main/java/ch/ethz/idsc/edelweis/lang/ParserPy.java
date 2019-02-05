@@ -28,7 +28,7 @@ public class ParserPy extends ParserBase {
     super(file);
     List<String> list = new ArrayList<>();
     try {
-      list = ReadLines.stream(file).filter(RELEVANT).collect(Collectors.toList());
+      list = ReadLines.of(file).stream().filter(RELEVANT).collect(Collectors.toList());
     } catch (Exception exception) {
       exception.printStackTrace();
     }

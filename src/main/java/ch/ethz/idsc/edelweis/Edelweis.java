@@ -3,7 +3,6 @@ package ch.ethz.idsc.edelweis;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -22,8 +21,6 @@ import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
 import ch.ethz.idsc.edelweis.prc.NoIdentifier;
-import ch.ethz.idsc.edelweis.util.FileDelete;
-import ch.ethz.idsc.tensor.io.HomeDirectory;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.red.Total;
 
@@ -33,34 +30,31 @@ public class Edelweis {
   }
 
   // TODO list duplicates in central page (not per project)
-  public static void main(String[] args) throws IOException {
+  public static void main(String[] args) {
     args = new String[] { "test" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
+    final File export = session.exportFolder();
     session.build();
-    final File root = HomeDirectory.Documents("edelweis", session.user);
-    if (root.isDirectory())
-      FileDelete.of(root, 3, 500).printNotification();
-    root.mkdirs();
     // File ICONS_OVERVIEW = new File(OUTPUT_ROOT, "icons_overview");
-    final File pages = new File(root, "pages");
-    final File tagimage = new File(root, "tagimage");
+    final File pages = new File(export, "pages");
+    final File tagimage = new File(export, "tagimage");
     tagimage.mkdir();
-    final File linechart = new File(root, "linechart");
+    final File linechart = new File(export, "linechart");
     linechart.mkdir();
     // ---
     generateTallImages(tagimage, session);
     // ---
     {
       List<BulkParser> list = session.bulkParsers().stream().filter(BulkParser::nonTest).collect(Collectors.toList());
-      LineChart.of(list, root);
+      LineChart.of(list, export);
     }
     // ---
     DependencyGlobal dependencyGlobal = new DependencyGlobal(session.bulkParsers());
     // ---
     NameCollisions nameCollisions = new NameCollisions(session.bulkParsers());
     // ---
-    HtmlUtf8.index(new File(root, "index.html"), "Edelweis " + session.user, "cols=\"250,*\"", "projects.htm", "menu", "lines.png", "project");
-    try (HtmlUtf8 menu = HtmlUtf8.page(new File(root, "projects.htm"), false)) {
+    HtmlUtf8.index(new File(export, "index.html"), "Edelweis " + session.user, "cols=\"250,*\"", "projects.htm", "menu", "lines.png", "project");
+    try (HtmlUtf8 menu = HtmlUtf8.page(new File(export, "projects.htm"), false)) {
       pages.mkdir();
       menu.appendln("<h3>" + session.user + "</h3>");
       menu.appendln("<table>");
