@@ -13,7 +13,7 @@ import ch.ethz.idsc.edelweis.lang.ParserJava;
   public int compare(Entry<ParserJava, Integer> entry1, Entry<ParserJava, Integer> entry2) {
     int cmp = Integer.compare(entry2.getValue(), entry1.getValue());
     return cmp == 0 //
-        ? entry1.getKey().identifier().compareTo(entry2.getKey().identifier())
+        ? entry1.getKey().file().compareTo(entry2.getKey().file())
         : cmp;
   }
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -26,6 +27,8 @@ public class DependencyGlobal {
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         .map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .forEach(identifier -> dependency.put(identifier, 0));
     // ---
     // global usage
@@ -47,6 +50,8 @@ public class DependencyGlobal {
         .map(ParserJava.class::cast) //
         .filter(ParserJava::isPublic) //
         .map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .filter(dependency::containsKey) //
         .filter(identifier -> 0 == dependency.get(identifier));
   }
@@ -57,7 +62,10 @@ public class DependencyGlobal {
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         // .filter(pj -> 0 < map.get(pj.identifier())) //
-        .forEach(parserJava -> map.put(parserJava, dependency.get(parserJava.identifier())));
+        // .filter(Optional::isPresent) //
+        // .map(Optional::get) //
+        .filter(pj -> pj.identifier().isPresent()) //
+        .forEach(parserJava -> map.put(parserJava, dependency.get(parserJava.identifier().get())));
     return map.entrySet().stream() //
         .sorted(EntrySort.INSTANCE) //
         .map(Entry::getKey) //
@@ -66,11 +74,15 @@ public class DependencyGlobal {
 
   public Stream<String> print(BulkParser bulkParser) {
     return stream(bulkParser).map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .map(string -> String.format("%5d %s", dependency.get(string), string));
   }
 
   public Tensor getRefs(BulkParser bulkParser) {
     return Tensor.of(stream(bulkParser).map(ParserJava::identifier) //
+        .filter(Optional::isPresent) //
+        .map(Optional::get) //
         .map(dependency::get).map(RealScalar::of));
   }
 }

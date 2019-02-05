@@ -2,6 +2,7 @@
 package ch.ethz.idsc.edelweis.lang;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -47,7 +48,13 @@ public class ParserJava extends ParserBase {
   public ParserJava(File file) {
     super(file);
     fileName = new Filename(file).title;
-    final List<String> lines = ReadLines.of(file);
+    List<String> lines = new ArrayList<>();
+    try {
+      lines = ReadLines.of(file);
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
+    // final List<String> lines = ReadLines.of(file);
     hasHeader = !lines.isEmpty() && COMMENT_PREDICATE.test(lines.get(0));
     count = (int) lines.stream().filter(RELEVANT_JAVA).count();
     // if (file.getName().equals("CsvFormat.java")) {
@@ -71,7 +78,6 @@ public class ParserJava extends ParserBase {
         isPublic = true;
         isAbstract = false;
         classType = null;
-        System.err.println("nodef: " + file);
       }
     }
     // build identifier, for instance ch.ethz.idsc.subare.core.DiscountFunction
@@ -83,8 +89,7 @@ public class ParserJava extends ParserBase {
       String string = optional.get();
       identifier = string + "." + name;
     } else {
-      System.err.println("nocid: " + file);
-      identifier = file.toString();
+      identifier = null;
     }
     // ---
     try {
@@ -103,8 +108,8 @@ public class ParserJava extends ParserBase {
   }
 
   /** @return string of the form "ch.ethz.idsc.tensor.Tensor" */
-  public String identifier() {
-    return identifier;
+  public Optional<String> identifier() {
+    return Optional.ofNullable(identifier);
   }
 
   /** @return string of the form "Tensor" */

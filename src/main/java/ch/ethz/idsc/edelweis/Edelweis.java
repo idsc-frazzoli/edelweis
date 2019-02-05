@@ -3,7 +3,6 @@ package ch.ethz.idsc.edelweis;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -21,8 +20,7 @@ import ch.ethz.idsc.edelweis.lang.ParserText;
 import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
-import ch.ethz.idsc.edelweis.util.FileDelete;
-import ch.ethz.idsc.tensor.io.HomeDirectory;
+import ch.ethz.idsc.edelweis.prc.NoIdentifier;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.red.Total;
 
@@ -31,34 +29,32 @@ public class Edelweis {
     return "<small><font color='#a0a0a0'>" + text + "</font></small>";
   }
 
-  public static void main(String[] args) throws IOException {
+  // TODO list duplicates in central page (not per project)
+  public static void main(String[] args) {
     args = new String[] { "test" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
+    final File export = session.exportFolder();
     session.build();
-    final File root = HomeDirectory.Documents("edelweis", session.user);
-    if (root.isDirectory())
-      FileDelete.of(root, 3, 500).printNotification();
-    root.mkdirs();
     // File ICONS_OVERVIEW = new File(OUTPUT_ROOT, "icons_overview");
-    final File pages = new File(root, "pages");
-    final File tagimage = new File(root, "tagimage");
+    final File pages = new File(export, "pages");
+    final File tagimage = new File(export, "tagimage");
     tagimage.mkdir();
-    final File linechart = new File(root, "linechart");
+    final File linechart = new File(export, "linechart");
     linechart.mkdir();
     // ---
     generateTallImages(tagimage, session);
     // ---
     {
       List<BulkParser> list = session.bulkParsers().stream().filter(BulkParser::nonTest).collect(Collectors.toList());
-      LineChart.of(list, root);
+      LineChart.of(list, export);
     }
     // ---
     DependencyGlobal dependencyGlobal = new DependencyGlobal(session.bulkParsers());
     // ---
     NameCollisions nameCollisions = new NameCollisions(session.bulkParsers());
     // ---
-    HtmlUtf8.index(new File(root, "index.html"), "Edelweis " + session.user, "cols=\"250,*\"", "projects.htm", "menu", "lines.png", "project");
-    try (HtmlUtf8 menu = HtmlUtf8.page(new File(root, "projects.htm"), false)) {
+    HtmlUtf8.index(new File(export, "index.html"), "Edelweis " + session.user, "cols=\"250,*\"", "projects.htm", "menu", "lines.png", "project");
+    try (HtmlUtf8 menu = HtmlUtf8.page(new File(export, "projects.htm"), false)) {
       pages.mkdir();
       menu.appendln("<h3>" + session.user + "</h3>");
       menu.appendln("<table>");
@@ -86,7 +82,8 @@ public class Edelweis {
             submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
             submenu.appendln("<tr><td><a href='lines.htm' target='content'>Lines</a> " + smallgray(Total.of(bulkParser.allLineCounts())));
-            submenu.appendln("<tr><td><a href='dependencies.htm' target='content'>Dependencies</a>");
+            if (!new ExtDependencies(bulkParser).getAll().isEmpty())
+              submenu.appendln("<tr><td><a href='dependencies.htm' target='content'>Dependencies</a>");
             // submenu.appendln("<tr><td><a href='../../linechart/" + name + ".png' target='content'>Chart</a>");
             if (0 < dependencyGlobal.publicUnref(bulkParser).count())
               submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
@@ -97,7 +94,9 @@ public class Edelweis {
             // htmlUtf8.append("<a href='edits.htm' target='content'>Edits</a><br/>\n");
             if (session.edelweisConfig.missingHeaders)
               if (!headerMissing.list.isEmpty())
-                submenu.append("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>\n");
+                submenu.appendln("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>");
+            if (NoIdentifier.of(bulkParser).findAny().isPresent())
+              submenu.appendln("<tr><td><a href='noid.htm' target='content'>No Identifier</a><br/>");
             submenu.appendln("<tr><td><a href='commits.htm' target='content'>Commits</a>");
             submenu.appendln("</table>");
           }
@@ -146,7 +145,13 @@ public class Edelweis {
             Map<String, Long> set = extDependencies.getAll();
             htmlUtf8.append("<h3>Dependencies</h3>\n");
             htmlUtf8.append("<pre>\n");
-            set.entrySet().forEach(entry -> htmlUtf8.append(String.format("%5d %s", entry.getValue(), entry.getKey()) + "\n"));
+            set.entrySet().forEach(entry -> htmlUtf8.appendln(String.format("%5d %s", entry.getValue(), entry.getKey())));
+            htmlUtf8.append("</pre>\n");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "noid.htm"), false)) {
+            htmlUtf8.append("<h3>No Identifier</h3>\n");
+            htmlUtf8.append("<pre>\n");
+            NoIdentifier.of(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "commits.htm"), false)) {

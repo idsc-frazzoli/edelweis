@@ -2,7 +2,11 @@
 package ch.ethz.idsc.edelweis.git;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import ch.ethz.idsc.edelweis.util.Run;
 
 /** configuration required prior use
  * 
@@ -18,7 +22,7 @@ public class Git {
 
   public static String version() {
     try {
-      return StaticHelper.static_process(new ProcessBuilder(getExecutable(), "--version"));
+      return Run.of(new ProcessBuilder(getExecutable(), "--version")).get(0);
     } catch (Exception myException) {
       myException.printStackTrace();
     }
@@ -30,75 +34,45 @@ public class Git {
 
   public Git(File directory) {
     this.directory = directory;
-    // if (!new File(directory, ".git").exists())
-    // System.err.println("warning: .git directory does not exist in given directory");
+  }
+
+  public boolean hint() {
+    if (!new File(directory, ".git").exists())
+      System.err.println("warning: .git directory does not exist in given directory");
     // ---
-    // File gitIgnore = new File(myDirectory, ".gitignore");
-    // if (!gitIgnore.exists()) {
-    // PrintStream myPrintStream = new PrintStream(gitIgnore);
-    // myPrintStream.println(".gitignore");
-    // myPrintStream.println("sha.properties");
-    // myPrintStream.close();
-    // }
+    File gitIgnore = new File(directory, ".gitignore");
+    if (!gitIgnore.exists()) {
+      // PrintStream myPrintStream = new PrintStream(gitIgnore);
+      // myPrintStream.println(".gitignore");
+      // myPrintStream.println("sha.properties");
+      // myPrintStream.close();
+    }
     // myManager = new Manager(new File(myDirectory, "sha.properties"));
+    return false;
   }
 
   public List<String> log() {
-    try {
-      ProcessBuilder processBuilder = new ProcessBuilder( //
-          "git", "log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
-      processBuilder.directory(directory);
-      return StaticHelper.static_process_lines(processBuilder);
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return null;
+    return git("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
   }
 
   public List<String> logSha1() {
-    try {
-      ProcessBuilder processBuilder = new ProcessBuilder( //
-          "git", "log", "--no-merges", "--pretty=format:%ad %H", "--date=short");
-      processBuilder.directory(directory);
-      return StaticHelper.static_process_lines(processBuilder);
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return null;
+    return git("log", "--no-merges", "--pretty=format:%ad %H", "--date=short");
   }
 
   public String branch() {
-    try {
-      ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), //
-          "rev-parse", "--abbrev-ref", "HEAD");
-      processBuilder.directory(directory);
-      return StaticHelper.static_process(processBuilder).trim();
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return null;
+    return git("rev-parse", "--abbrev-ref", "HEAD").get(0);
   }
 
   public String currentCommitSha1() {
-    try {
-      ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), "rev-parse", "HEAD");
-      processBuilder.directory(directory);
-      return StaticHelper.static_process(processBuilder).trim();
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return null;
+    return git("rev-parse", "HEAD").get(0);
   }
 
   public boolean isClean() {
-    try {
-      ProcessBuilder processBuilder = new ProcessBuilder(getExecutable(), "status", "-s");
-      processBuilder.directory(directory);
-      return StaticHelper.static_process(processBuilder).trim().isEmpty();
-    } catch (Exception exception) {
-      exception.printStackTrace();
-    }
-    return false;
+    return git("status", "-s").isEmpty();
+  }
+
+  public void checkout(String string) throws Exception {
+    process(new ProcessBuilder(getExecutable(), "checkout", string));
   }
 
   // private void init() throws Exception {
@@ -134,20 +108,22 @@ public class Git {
   // myManager.manifest();
   // }
   // }
-  synchronized String process(ProcessBuilder processBuilder) throws Exception {
-    processBuilder.directory(directory);
-    return StaticHelper.static_process(processBuilder);
-  }
-
-  public void checkout(String string) throws Exception {
-    process(new ProcessBuilder(getExecutable(), "checkout", string));
-  }
-
-  public void tryCheckout(String string) {
+  private List<String> git(String... strings) {
+    List<String> list = new ArrayList<>();
+    list.add(getExecutable());
+    list.addAll(Arrays.asList(strings));
     try {
-      checkout(string);
-    } catch (Exception myException) {
-      myException.printStackTrace();
+      ProcessBuilder processBuilder = new ProcessBuilder(list);
+      processBuilder.directory(directory);
+      return Run.of(processBuilder);
+    } catch (Exception exception) {
+      exception.printStackTrace();
     }
+    throw new RuntimeException();
+  }
+
+  private void process(ProcessBuilder processBuilder) throws Exception {
+    processBuilder.directory(directory);
+    Run.of(processBuilder);
   }
 }

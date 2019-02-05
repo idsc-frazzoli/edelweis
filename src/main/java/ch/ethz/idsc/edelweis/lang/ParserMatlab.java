@@ -15,11 +15,15 @@ public class ParserMatlab extends ParserBase {
           && !string.startsWith("%");
     }
   };
-  final int count;
+  private int count;
 
   public ParserMatlab(File file) {
     super(file);
-    count = (int) ReadLines.of(file).stream().filter(RELEVANT).count();
+    try {
+      count = (int) ReadLines.of(file).stream().filter(RELEVANT).count();
+    } catch (Exception exception) {
+      exception.printStackTrace();
+    }
   }
 
   @Override // from ParserCode
