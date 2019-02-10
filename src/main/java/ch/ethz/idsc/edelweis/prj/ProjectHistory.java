@@ -111,4 +111,14 @@ public class ProjectHistory {
     }
     return tableBuilder.toTable();
   }
+
+  public Tensor todos() {
+    TableBuilder tableBuilder = new TableBuilder();
+    for (Entry<Integer, BulkParser> entry : bulkParsers.entrySet()) {
+      BulkParser bulkParser = entry.getValue();
+      int todos = (int) bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count();
+      tableBuilder.appendRow(Tensors.vector(entry.getKey(), todos));
+    }
+    return tableBuilder.toTable();
+  }
 }

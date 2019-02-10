@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.edelweis.htm.HtmlUtf8;
 import ch.ethz.idsc.edelweis.lang.ClassType;
 import ch.ethz.idsc.edelweis.lang.ParserCode;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
@@ -21,6 +20,7 @@ import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
 import ch.ethz.idsc.edelweis.prc.NoIdentifier;
+import ch.ethz.idsc.subare.util.HtmlUtf8;
 import ch.ethz.idsc.tensor.io.UserName;
 import ch.ethz.idsc.tensor.red.Total;
 
@@ -54,7 +54,7 @@ public class Edelweis {
     NameCollisions nameCollisions = new NameCollisions(session.bulkParsers());
     // ---
     HtmlUtf8.index(new File(export, "index.html"), "Edelweis " + session.user, "cols=\"250,*\"", "projects.htm", "menu", "lines.png", "project");
-    try (HtmlUtf8 menu = HtmlUtf8.page(new File(export, "projects.htm"), false)) {
+    try (HtmlUtf8 menu = HtmlUtf8.page(new File(export, "projects.htm"))) {
       pages.mkdir();
       menu.appendln("<h3>" + session.user + "</h3>");
       menu.appendln("<table>");
@@ -71,13 +71,13 @@ public class Edelweis {
           HeaderMissing headerMissing = new HeaderMissing(bulkParser);
           List<String> duplicates = nameCollisions.duplicates(bulkParser).collect(Collectors.toList());
           if (!headerMissing.list.isEmpty())
-            try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "headermiss.htm"), false)) {
+            try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "headermiss.htm"))) {
               htmlUtf8.appendln("<h3>Missing Headers</h3>");
               htmlUtf8.appendln("<pre>");
               headerMissing.list.stream().map(ParserJava::identifier).forEach(htmlUtf8::appendln);
               htmlUtf8.appendln("</pre>");
             }
-          try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"), false)) {
+          try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"))) {
             submenu.appendln("<img src='../../tagimage/" + name + ".png'>");
             submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
@@ -101,19 +101,19 @@ public class Edelweis {
             submenu.appendln("</table>");
           }
           // ---
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "lines.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "lines.htm"))) {
             htmlUtf8.appendln("<h3>Lines</h3>");
             htmlUtf8.appendln("<pre>");
             LinesLister.html(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "ghost.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "ghost.htm"))) {
             htmlUtf8.appendln("<h3>Unused</h3>");
             htmlUtf8.appendln("<pre>");
             dependencyGlobal.publicUnref(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "names.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "names.htm"))) {
             htmlUtf8.appendln("<h3>Duplicate Names</h3>");
             htmlUtf8.appendln("<pre>");
             for (String key : duplicates) {
@@ -123,7 +123,7 @@ public class Edelweis {
             }
             htmlUtf8.append("</pre>\n");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "todos.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "todos.htm"))) {
             htmlUtf8.append("<h3>Todos</h3>\n");
             htmlUtf8.append("<pre>\n");
             for (ParserText parserText : bulkParser.texts())
@@ -134,13 +134,13 @@ public class Edelweis {
               }
             htmlUtf8.append("</pre>\n");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "edits.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "edits.htm"))) {
             htmlUtf8.append("<h3>Edits</h3>\n");
             htmlUtf8.append("<pre>\n");
             // new EditCount(bulkParser).listing().forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "dependencies.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "dependencies.htm"))) {
             ExtDependencies extDependencies = new ExtDependencies(bulkParser);
             Map<String, Long> set = extDependencies.getAll();
             htmlUtf8.append("<h3>Dependencies</h3>\n");
@@ -148,13 +148,13 @@ public class Edelweis {
             set.entrySet().forEach(entry -> htmlUtf8.appendln(String.format("%5d %s", entry.getValue(), entry.getKey())));
             htmlUtf8.append("</pre>\n");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "noid.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "noid.htm"))) {
             htmlUtf8.append("<h3>No Identifier</h3>\n");
             htmlUtf8.append("<pre>\n");
             NoIdentifier.of(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
-          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "commits.htm"), false)) {
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "commits.htm"))) {
             htmlUtf8.append("<h3>Commits</h3>\n");
             htmlUtf8.append("<pre>\n");
             bulkParser.log().stream().forEach(htmlUtf8::appendln);
