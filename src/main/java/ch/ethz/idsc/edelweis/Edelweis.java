@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
 
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
+
 import ch.ethz.idsc.edelweis.lang.ClassType;
 import ch.ethz.idsc.edelweis.lang.ParserCode;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
@@ -31,7 +34,7 @@ public class Edelweis {
 
   // TODO list duplicates in central page (not per project)
   public static void main(String[] args) {
-    args = new String[] { "test" };
+    args = new String[] { "datahaki" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = session.exportFolder();
     session.build();
@@ -66,7 +69,7 @@ public class Edelweis {
             "<tr><td><a href='" + pages.getName() + "/" + link + "' target='project'>" + name + "</a> <td align='right'>" + smallgray(size) + "</tr>");
         {
           HtmlUtf8.index(new File(pages, link), "", "cols=\"300,*\"", name + "/menu.htm", "item", name + "/lines.htm", "content");
-          File dir = new File(pages, name);
+          final File dir = new File(pages, name);
           dir.mkdir();
           HeaderMissing headerMissing = new HeaderMissing(bulkParser);
           List<String> duplicates = nameCollisions.duplicates(bulkParser).collect(Collectors.toList());
@@ -103,6 +106,13 @@ public class Edelweis {
           // ---
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "lines.htm"))) {
             htmlUtf8.appendln("<h3>Lines</h3>");
+            try {
+              JFreeChart jFreeChart = ParserImages.lines(bulkParser, 10);
+              ChartUtils.saveChartAsPNG(new File(dir, "histogram_lines.png"), jFreeChart, 640, 360);
+            } catch (Exception exception) {
+              exception.printStackTrace();
+            }
+            htmlUtf8.appendln("<img src='histogram_lines.png' /><br/>");
             htmlUtf8.appendln("<pre>");
             LinesLister.html(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");

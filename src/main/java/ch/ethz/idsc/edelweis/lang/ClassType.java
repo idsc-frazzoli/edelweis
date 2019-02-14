@@ -8,6 +8,7 @@ public enum ClassType {
   INTERFACE, //
   CLASS, //
   ENUM, //
+  UNKNOWN, //
   ;
   // ---
   private final String lowercaseId = name().toLowerCase() + " ";

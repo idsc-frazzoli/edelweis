@@ -68,16 +68,14 @@ public class ParserJava extends ParserBase {
       Optional<String> optional = lines.stream() //
           .filter(ClassType.definition(name)) //
           .findFirst();
+      classType = optional.map(ClassType::in).orElse(ClassType.UNKNOWN);
       if (optional.isPresent()) {
         String line = optional.get();
-        classType = ClassType.in(line);
-        // System.out.println(classType + " " + line);
         isPublic = line.startsWith("public ");
         isAbstract = line.contains("abstract ");
       } else {
         isPublic = true;
         isAbstract = false;
-        classType = null;
       }
     }
     // build identifier, for instance ch.ethz.idsc.subare.core.DiscountFunction
