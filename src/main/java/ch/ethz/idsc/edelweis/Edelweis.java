@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.imageio.ImageIO;
@@ -77,7 +78,11 @@ public class Edelweis {
             try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "headermiss.htm"))) {
               htmlUtf8.appendln("<h3>Missing Headers</h3>");
               htmlUtf8.appendln("<pre>");
-              headerMissing.list.stream().map(ParserJava::identifier).forEach(htmlUtf8::appendln);
+              headerMissing.list.stream() //
+                  .map(ParserJava::identifier) //
+                  .filter(Optional::isPresent) //
+                  .map(Optional::get) //
+                  .forEach(htmlUtf8::appendln);
               htmlUtf8.appendln("</pre>");
             }
           try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"))) {

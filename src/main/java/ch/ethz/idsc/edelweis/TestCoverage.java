@@ -18,14 +18,14 @@ public class TestCoverage {
       throw new RuntimeException(main.toString());
     if (!test.isDirectory())
       throw new RuntimeException(test.toString());
-    visit(main);
+    // visitMain(main);
+    System.out.println("---");
+    visitTest(test);
   }
 
-  private void visit(File file) {
+  private void visitMain(File file) {
     if (file.isDirectory())
-      Stream.of(file.listFiles()).sorted().forEach(this::visit);
-    // for (File item : file.listFiles())
-    // visit(item);
+      Stream.of(file.listFiles()).sorted().forEach(this::visitMain);
     else {
       Filename filename = new Filename(file);
       if (filename.hasExtension("java")) {
@@ -33,6 +33,22 @@ public class TestCoverage {
         String substring = string.substring(main.toString().length() + 1, string.length() - 5);
         File testfile = new File(test, substring + "Test.java");
         if (!testfile.isFile())
+          System.out.println(substring);
+      }
+    }
+  }
+
+  private void visitTest(File file) {
+    if (file.isDirectory())
+      Stream.of(file.listFiles()).sorted().forEach(this::visitTest);
+    else {
+      Filename filename = new Filename(file);
+      if (filename.hasExtension("java") && filename.title.endsWith("Test")) {
+        String string = file.toString();
+        String substring = string.substring(test.toString().length() + 1, string.length() - 5 - 4);
+        File testfile = new File(test, substring + ".java");
+        File mainfile = new File(main, substring + ".java");
+        if (!mainfile.isFile() && !testfile.isFile())
           System.out.println(substring);
       }
     }
