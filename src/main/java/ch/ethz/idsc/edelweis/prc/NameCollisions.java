@@ -23,7 +23,7 @@ public class NameCollisions {
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         .filter(ParserJava::isPublic) //
-        .collect(Collectors.groupingBy(ParserJava::fileName));
+        .collect(Collectors.groupingBy(ParserJava::fileTitle));
   }
 
   public Stream<String> duplicates(BulkParser bulkParser) {
@@ -31,7 +31,7 @@ public class NameCollisions {
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
         .filter(ParserJava::isPublic) //
-        .map(ParserJava::fileName) //
+        .map(ParserJava::fileTitle) //
         .filter(map::containsKey) //
         .filter(fileName -> 1 < map.get(fileName).size()) //
         .distinct() //

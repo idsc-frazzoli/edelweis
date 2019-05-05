@@ -8,9 +8,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
+
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
 
 import ch.ethz.idsc.edelweis.lang.ClassType;
 import ch.ethz.idsc.edelweis.lang.ParserCode;
@@ -31,7 +36,7 @@ public class Edelweis {
 
   // TODO list duplicates in central page (not per project)
   public static void main(String[] args) {
-    args = new String[] { "test" };
+    args = new String[] { "datahaki" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = session.exportFolder();
     session.build();
@@ -53,6 +58,15 @@ public class Edelweis {
     // ---
     NameCollisions nameCollisions = new NameCollisions(session.bulkParsers());
     // ---
+    {
+      CommonLines commonLines = new CommonLines(session.bulkParsers().stream().filter(BulkParser::nonTest));
+      try (HtmlUtf8 page = HtmlUtf8.page(new File(export, "commons.htm"))) {
+        page.appendln("<pre>");
+        commonLines.matrix().forEach(page::appendln);
+        page.appendln("</pre>");
+      }
+    }
+    // ---
     HtmlUtf8.index(new File(export, "index.html"), "Edelweis " + session.user, "cols=\"250,*\"", "projects.htm", "menu", "lines.png", "project");
     try (HtmlUtf8 menu = HtmlUtf8.page(new File(export, "projects.htm"))) {
       pages.mkdir();
@@ -66,7 +80,7 @@ public class Edelweis {
             "<tr><td><a href='" + pages.getName() + "/" + link + "' target='project'>" + name + "</a> <td align='right'>" + smallgray(size) + "</tr>");
         {
           HtmlUtf8.index(new File(pages, link), "", "cols=\"300,*\"", name + "/menu.htm", "item", name + "/lines.htm", "content");
-          File dir = new File(pages, name);
+          final File dir = new File(pages, name);
           dir.mkdir();
           HeaderMissing headerMissing = new HeaderMissing(bulkParser);
           List<String> duplicates = nameCollisions.duplicates(bulkParser).collect(Collectors.toList());
@@ -74,19 +88,25 @@ public class Edelweis {
             try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "headermiss.htm"))) {
               htmlUtf8.appendln("<h3>Missing Headers</h3>");
               htmlUtf8.appendln("<pre>");
-              headerMissing.list.stream().map(ParserJava::identifier).forEach(htmlUtf8::appendln);
+              headerMissing.list.stream() //
+                  .map(ParserJava::identifier) //
+                  .filter(Optional::isPresent) //
+                  .map(Optional::get) //
+                  .forEach(htmlUtf8::appendln);
               htmlUtf8.appendln("</pre>");
             }
           try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"))) {
             submenu.appendln("<img src='../../tagimage/" + name + ".png'>");
             submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
+            // ---
             submenu.appendln("<tr><td><a href='lines.htm' target='content'>Lines</a> " + smallgray(Total.of(bulkParser.allLineCounts())));
             if (!new ExtDependencies(bulkParser).getAll().isEmpty())
               submenu.appendln("<tr><td><a href='dependencies.htm' target='content'>Dependencies</a>");
             // submenu.appendln("<tr><td><a href='../../linechart/" + name + ".png' target='content'>Chart</a>");
             if (0 < dependencyGlobal.publicUnref(bulkParser).count())
               submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
+            submenu.appendln("<tr><td><a href='common.htm' target='content'>Common</a><br/>");
             if (!duplicates.isEmpty())
               submenu.appendln("<tr><td><a href='names.htm' target='content'>Duplicate Names</a><br/>");
             if (0 < bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count())
@@ -103,6 +123,13 @@ public class Edelweis {
           // ---
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "lines.htm"))) {
             htmlUtf8.appendln("<h3>Lines</h3>");
+            try {
+              JFreeChart jFreeChart = ParserImages.lines(bulkParser, 10);
+              ChartUtils.saveChartAsPNG(new File(dir, "histogram_lines.png"), jFreeChart, 640, 360);
+            } catch (Exception exception) {
+              exception.printStackTrace();
+            }
+            htmlUtf8.appendln("<img src='histogram_lines.png' /><br/>");
             htmlUtf8.appendln("<pre>");
             LinesLister.html(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
@@ -111,6 +138,12 @@ public class Edelweis {
             htmlUtf8.appendln("<h3>Unused</h3>");
             htmlUtf8.appendln("<pre>");
             dependencyGlobal.publicUnref(bulkParser).forEach(htmlUtf8::appendln);
+            htmlUtf8.appendln("</pre>");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "common.htm"))) {
+            htmlUtf8.appendln("<h3>Common</h3>");
+            htmlUtf8.appendln("<pre>");
+            new CommonLines(Stream.of(bulkParser)).matrix().forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "names.htm"))) {
@@ -163,6 +196,8 @@ public class Edelweis {
         }
       }
       menu.appendln("</table>");
+      menu.appendln("<hr/>");
+      menu.appendln("<a href='commons.htm' target='project'>commons</a>");
       menu.appendln("<hr/>");
       menu.appendln("<a href='lines.png' target='project'>lines</a>");
       menu.appendln("<hr/>");

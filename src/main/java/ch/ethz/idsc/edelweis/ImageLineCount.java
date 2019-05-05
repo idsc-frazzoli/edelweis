@@ -24,12 +24,13 @@ import ch.ethz.idsc.tensor.pdf.InverseCDF;
 import ch.ethz.idsc.tensor.red.Median;
 import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** image based on line count */
 public enum ImageLineCount {
   ;
-  private static final Clip LINES_CLIP = Clip.function(0, 180);
+  private static final Clip LINES_CLIP = Clips.interval(0, 180);
   static final int WIDTH = 256;
   private static final ScalarTensorFunction COLOR_DATA_GRADIENT = ColorDataGradients.STARRYNIGHT;
 

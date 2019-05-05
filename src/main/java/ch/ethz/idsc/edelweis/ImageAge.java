@@ -24,12 +24,13 @@ import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.HistogramDistribution;
 import ch.ethz.idsc.tensor.pdf.InverseCDF;
 import ch.ethz.idsc.tensor.sca.Clip;
+import ch.ethz.idsc.tensor.sca.Clips;
 
 /** image based on line count */
 public enum ImageAge {
   ;
   private static final Tensor AXES = Tensors.vector(-90, -60, -30);
-  private static final Clip LINES_CLIP = Clip.function(-30 * 4, 0);
+  private static final Clip LINES_CLIP = Clips.interval(-30 * 4, 0);
   private static final int WIDTH = 256;
   private static final ScalarTensorFunction COLOR_DATA_GRADIENT = ColorDataGradients.DENSITY;
 

@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import ch.ethz.idsc.edelweis.util.Filename;
 import ch.ethz.idsc.edelweis.util.ReadLines;
@@ -38,7 +39,7 @@ public class ParserJava extends ParserBase {
   // ---
   private final int count;
   private final String identifier;
-  private final String fileName;
+  private final String fileTitle;
   private final Set<String> imports = new HashSet<>();
   private final ClassType classType;
   private final boolean isPublic;
@@ -47,7 +48,7 @@ public class ParserJava extends ParserBase {
 
   public ParserJava(File file) {
     super(file);
-    fileName = new Filename(file).title;
+    fileTitle = new Filename(file).title;
     List<String> lines = new ArrayList<>();
     try {
       lines = ReadLines.of(file);
@@ -68,16 +69,14 @@ public class ParserJava extends ParserBase {
       Optional<String> optional = lines.stream() //
           .filter(ClassType.definition(name)) //
           .findFirst();
+      classType = optional.map(ClassType::in).orElse(ClassType.UNKNOWN);
       if (optional.isPresent()) {
         String line = optional.get();
-        classType = ClassType.in(line);
-        // System.out.println(classType + " " + line);
         isPublic = line.startsWith("public ");
         isAbstract = line.contains("abstract ");
       } else {
         isPublic = true;
         isAbstract = false;
-        classType = null;
       }
     }
     // build identifier, for instance ch.ethz.idsc.subare.core.DiscountFunction
@@ -102,6 +101,14 @@ public class ParserJava extends ParserBase {
     }
   }
 
+  public Stream<String> lines() {
+    try {
+      return ReadLines.of(file()).stream().filter(RELEVANT_JAVA);
+    } catch (Exception exception) {
+      throw new RuntimeException();
+    }
+  }
+
   @Override // from ParserCode
   public int lineCount() {
     return count;
@@ -113,8 +120,8 @@ public class ParserJava extends ParserBase {
   }
 
   /** @return string of the form "Tensor" */
-  public String fileName() {
-    return fileName;
+  public String fileTitle() {
+    return fileTitle;
   }
 
   public ClassType classType() {
