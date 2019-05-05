@@ -35,7 +35,7 @@ public class Edelweis {
 
   // TODO list duplicates in central page (not per project)
   public static void main(String[] args) {
-    args = new String[] { "datahaki" };
+    args = new String[] { "gokart" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = session.exportFolder();
     session.build();
@@ -56,6 +56,15 @@ public class Edelweis {
     DependencyGlobal dependencyGlobal = new DependencyGlobal(session.bulkParsers());
     // ---
     NameCollisions nameCollisions = new NameCollisions(session.bulkParsers());
+    // ---
+    {
+      CommonLines commonLines = new CommonLines(session.bulkParsers());
+      try (HtmlUtf8 page = HtmlUtf8.page(new File(export, "commons.htm"))) {
+        page.appendln("<pre>");
+        commonLines.matrix().forEach(page::appendln);
+        page.appendln("</pre>");
+      }
+    }
     // ---
     HtmlUtf8.index(new File(export, "index.html"), "Edelweis " + session.user, "cols=\"250,*\"", "projects.htm", "menu", "lines.png", "project");
     try (HtmlUtf8 menu = HtmlUtf8.page(new File(export, "projects.htm"))) {
@@ -89,6 +98,7 @@ public class Edelweis {
             submenu.appendln("<img src='../../tagimage/" + name + ".png'>");
             submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
+            // ---
             submenu.appendln("<tr><td><a href='lines.htm' target='content'>Lines</a> " + smallgray(Total.of(bulkParser.allLineCounts())));
             if (!new ExtDependencies(bulkParser).getAll().isEmpty())
               submenu.appendln("<tr><td><a href='dependencies.htm' target='content'>Dependencies</a>");
@@ -178,6 +188,8 @@ public class Edelweis {
         }
       }
       menu.appendln("</table>");
+      menu.appendln("<hr/>");
+      menu.appendln("<a href='commons.htm' target='project'>commons</a>");
       menu.appendln("<hr/>");
       menu.appendln("<a href='lines.png' target='project'>lines</a>");
       menu.appendln("<hr/>");
