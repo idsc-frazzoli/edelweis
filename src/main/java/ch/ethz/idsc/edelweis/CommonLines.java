@@ -13,36 +13,40 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.edelweis.util.Sets;
+import ch.ethz.idsc.tensor.RealScalar;
+import ch.ethz.idsc.tensor.Tensor;
 
 public class CommonLines {
   private final Map<ParserJava, Set<String>> map;
+  private final Map<String, Integer> result = new HashMap<>();
 
   public CommonLines(Stream<BulkParser> bulkParsers) {
     map = bulkParsers.map(BulkParser::codes) //
         .flatMap(List::stream) //
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
-        .collect(Collectors.toMap(j -> j, j -> j.lines().map(String::trim).collect(Collectors.toSet())));
-  }
-
-  public Stream<String> matrix() {
+        .collect(Collectors.toMap(parserJava -> parserJava, parserJava -> parserJava.lines().map(String::trim).collect(Collectors.toSet())));
     List<ParserJava> list = new ArrayList<>(map.keySet());
-    Map<String, Integer> result = new HashMap<>();
     for (int c0 = 0; c0 < list.size() - 1; ++c0)
       for (int c1 = c0 + 1; c1 < list.size(); ++c1) {
         Set<String> set = Sets.intersect(map.get(list.get(c0)), map.get(list.get(c1)));
         if (2 < set.size())
           result.put(list.get(c0).fileTitle() + " " + list.get(c1).fileTitle(), set.size());
       }
-    List<String> list2 = new ArrayList<>(result.keySet());
-    Collections.sort(list2, new Comparator<String>() {
+  }
+
+  public Stream<String> matrix() {
+    List<String> pairs = new ArrayList<>(result.keySet());
+    Collections.sort(pairs, new Comparator<String>() {
       @Override
       public int compare(String o1, String o2) {
         return -Integer.compare(result.get(o1), result.get(o2));
       }
     });
-    // for (String line : list2.subList(0, 200))
-    // System.out.println(String.format("%5d %s", result.get(line), line));
-    return list2.stream().limit(400).map(line -> String.format("%5d %s", result.get(line), line));
+    return pairs.stream().limit(400).map(pair -> String.format("%5d %s", result.get(pair), pair));
+  }
+
+  public Tensor vector() {
+    return Tensor.of(result.values().stream().sorted().map(RealScalar::of));
   }
 }

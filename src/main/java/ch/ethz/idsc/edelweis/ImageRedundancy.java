@@ -21,20 +21,19 @@ import ch.ethz.idsc.tensor.pdf.Distribution;
 import ch.ethz.idsc.tensor.pdf.HistogramDistribution;
 import ch.ethz.idsc.tensor.pdf.InverseCDF;
 import ch.ethz.idsc.tensor.red.Median;
-import ch.ethz.idsc.tensor.red.Total;
 import ch.ethz.idsc.tensor.sca.Clip;
 import ch.ethz.idsc.tensor.sca.Clips;
 import ch.ethz.idsc.tensor.sca.Round;
 
 /** image based on line count */
-public enum ImageLineCount {
+public enum ImageRedundancy {
   ;
-  private static final Clip LINES_CLIP = Clips.interval(0, 180);
-  static final int WIDTH = 256;
+  private static final Clip LINES_CLIP = Clips.interval(0, 50);
+  // static final int WIDTH = 256;
   private static final ScalarTensorFunction COLOR_DATA_GRADIENT = ColorDataGradients.STARRYNIGHT;
 
-  public static BufferedImage generate(BulkParser bulkParser, int width) {
-    Distribution distribution = HistogramDistribution.of(LINES_CLIP.of(bulkParser.allLineCounts()), RealScalar.ONE);
+  public static BufferedImage generate(Tensor vector, int width) {
+    Distribution distribution = HistogramDistribution.of(LINES_CLIP.of(vector), RealScalar.ONE);
     Tensor array = Subdivide.of(0, 1.0, width - 1) //
         .map(InverseCDF.of(distribution)::quantile) //
         .map(LINES_CLIP::rescale);
@@ -55,26 +54,26 @@ public enum ImageLineCount {
     GraphicsUtil.setQualityHigh(graphics);
     {
       graphics.setColor(Color.WHITE);
-      Scalar total = Round.FUNCTION.apply(Total.of(bulkParser.allLineCounts()).divide(RealScalar.of(1000)).Get());
-      graphics.drawString(String.format("%d files, %sk lines", bulkParser.allLineCounts().length(), total), 2, 13);
+      // Scalar total = Round.FUNCTION.apply(Total.of(vector).divide(RealScalar.of(1000)).Get());
+      // graphics.drawString(String.format("%d files, %sk lines", bulkParser.allLineCounts().length(), total), 2, 13);
     }
     {
       graphics.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
       graphics.setColor(Color.LIGHT_GRAY);
-      Scalar median = Median.of(bulkParser.allLineCounts()).Get();
+      Scalar median = Median.of(vector).Get();
       graphics.drawString(String.format("median: %s lines per file", Round.of(median)), 2, 30);
     }
-    {
-      graphics.setColor(Color.BLACK);
-      for (Tensor val : Tensors.vector(50, 100)) {
-        Scalar p100 = cdf.p_lessThan(val.Get()).multiply(RealScalar.of(width));
-        String str = "" + val;
-        int len = graphics.getFontMetrics().stringWidth(str);
-        int pix = p100.number().intValue() - len;
-        if (128 < pix)
-          graphics.drawString(str, pix, 27);
-      }
-    }
+    // {
+    // graphics.setColor(Color.BLACK);
+    // for (Tensor val : Tensors.vector(50, 100)) {
+    // Scalar p100 = cdf.p_lessThan(val.Get()).multiply(RealScalar.of(width));
+    // String str = "" + val;
+    // int len = graphics.getFontMetrics().stringWidth(str);
+    // int pix = p100.number().intValue() - len;
+    // if (128 < pix)
+    // graphics.drawString(str, pix, 27);
+    // }
+    // }
     return bufferedImage;
   }
 }

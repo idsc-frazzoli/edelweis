@@ -21,6 +21,7 @@ import ch.ethz.idsc.edelweis.lang.ClassType;
 import ch.ethz.idsc.edelweis.lang.ParserCode;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.edelweis.lang.ParserText;
+import ch.ethz.idsc.edelweis.prc.CommentCount;
 import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
@@ -44,6 +45,8 @@ public class Edelweis {
     final File pages = new File(export, "pages");
     final File tagimage = new File(export, "tagimage");
     tagimage.mkdir();
+    final File commonimage = new File(export, "commonimage");
+    commonimage.mkdir();
     final File linechart = new File(export, "linechart");
     linechart.mkdir();
     // ---
@@ -97,6 +100,7 @@ public class Edelweis {
             }
           try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"))) {
             submenu.appendln("<img src='../../tagimage/" + name + ".png'>");
+            submenu.appendln("<img src='../../commonimage/" + name + ".png'>");
             submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
             // ---
@@ -106,7 +110,7 @@ public class Edelweis {
             // submenu.appendln("<tr><td><a href='../../linechart/" + name + ".png' target='content'>Chart</a>");
             if (0 < dependencyGlobal.publicUnref(bulkParser).count())
               submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
-            submenu.appendln("<tr><td><a href='common.htm' target='content'>Common</a><br/>");
+            submenu.appendln("<tr><td><a href='common.htm' target='content'>Redundancy</a><br/>");
             if (!duplicates.isEmpty())
               submenu.appendln("<tr><td><a href='names.htm' target='content'>Duplicate Names</a><br/>");
             if (0 < bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count())
@@ -117,6 +121,7 @@ public class Edelweis {
                 submenu.appendln("<tr><td><a href='headermiss.htm' target='content'>Headermiss</a><br/>");
             if (NoIdentifier.of(bulkParser).findAny().isPresent())
               submenu.appendln("<tr><td><a href='noid.htm' target='content'>No Identifier</a><br/>");
+            submenu.appendln("<tr><td><a href='remcount.htm' target='content'>Remcount</a>");
             submenu.appendln("<tr><td><a href='commits.htm' target='content'>Commits</a>");
             submenu.appendln("</table>");
           }
@@ -140,11 +145,18 @@ public class Edelweis {
             dependencyGlobal.publicUnref(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
+          CommonLines commonLines = new CommonLines(Stream.of(bulkParser));
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "common.htm"))) {
-            htmlUtf8.appendln("<h3>Common</h3>");
+            htmlUtf8.appendln("<h3>Redundancy</h3>");
             htmlUtf8.appendln("<pre>");
-            new CommonLines(Stream.of(bulkParser)).matrix().forEach(htmlUtf8::appendln);
+            commonLines.matrix().forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
+          }
+          try {
+            BufferedImage bufferedImage = ImageRedundancy.generate(commonLines.vector(), 180);
+            ImageIO.write(bufferedImage, "png", new File(commonimage, name + ".png"));
+          } catch (Exception exception) {
+            exception.printStackTrace();
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "names.htm"))) {
             htmlUtf8.appendln("<h3>Duplicate Names</h3>");
@@ -185,6 +197,12 @@ public class Edelweis {
             htmlUtf8.append("<h3>No Identifier</h3>\n");
             htmlUtf8.append("<pre>\n");
             NoIdentifier.of(bulkParser).forEach(htmlUtf8::appendln);
+            htmlUtf8.append("</pre>\n");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "remcount.htm"))) {
+            htmlUtf8.append("<h3>Comment Count</h3>\n");
+            htmlUtf8.append("<pre>\n");
+            CommentCount.of(bulkParser).forEach(htmlUtf8::appendln);
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "commits.htm"))) {
