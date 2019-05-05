@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.imageio.ImageIO;
 
@@ -35,7 +36,7 @@ public class Edelweis {
 
   // TODO list duplicates in central page (not per project)
   public static void main(String[] args) {
-    args = new String[] { "gokart" };
+    args = new String[] { "datahaki" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = session.exportFolder();
     session.build();
@@ -58,7 +59,7 @@ public class Edelweis {
     NameCollisions nameCollisions = new NameCollisions(session.bulkParsers());
     // ---
     {
-      CommonLines commonLines = new CommonLines(session.bulkParsers());
+      CommonLines commonLines = new CommonLines(session.bulkParsers().stream().filter(BulkParser::nonTest));
       try (HtmlUtf8 page = HtmlUtf8.page(new File(export, "commons.htm"))) {
         page.appendln("<pre>");
         commonLines.matrix().forEach(page::appendln);
@@ -105,6 +106,7 @@ public class Edelweis {
             // submenu.appendln("<tr><td><a href='../../linechart/" + name + ".png' target='content'>Chart</a>");
             if (0 < dependencyGlobal.publicUnref(bulkParser).count())
               submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
+            submenu.appendln("<tr><td><a href='common.htm' target='content'>Common</a><br/>");
             if (!duplicates.isEmpty())
               submenu.appendln("<tr><td><a href='names.htm' target='content'>Duplicate Names</a><br/>");
             if (0 < bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count())
@@ -136,6 +138,12 @@ public class Edelweis {
             htmlUtf8.appendln("<h3>Unused</h3>");
             htmlUtf8.appendln("<pre>");
             dependencyGlobal.publicUnref(bulkParser).forEach(htmlUtf8::appendln);
+            htmlUtf8.appendln("</pre>");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "common.htm"))) {
+            htmlUtf8.appendln("<h3>Common</h3>");
+            htmlUtf8.appendln("<pre>");
+            new CommonLines(Stream.of(bulkParser)).matrix().forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "names.htm"))) {

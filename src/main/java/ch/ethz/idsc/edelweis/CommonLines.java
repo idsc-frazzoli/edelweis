@@ -2,7 +2,6 @@
 package ch.ethz.idsc.edelweis;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -18,10 +17,8 @@ import ch.ethz.idsc.edelweis.util.Sets;
 public class CommonLines {
   private final Map<ParserJava, Set<String>> map;
 
-  public CommonLines(Collection<BulkParser> bulkParsers) {
-    map = bulkParsers.stream() //
-        .filter(BulkParser::nonTest) //
-        .map(BulkParser::codes) //
+  public CommonLines(Stream<BulkParser> bulkParsers) {
+    map = bulkParsers.map(BulkParser::codes) //
         .flatMap(List::stream) //
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //

@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 public enum Sets {
   ;
   public static <T> Set<T> intersect(Set<T> a, Set<T> b) {
-    if (a.size() < b.size())
-      return a.stream().filter(b::contains).collect(Collectors.toSet());
-    return b.stream().filter(a::contains).collect(Collectors.toSet());
+    return (a.size() < b.size() //
+        ? a.stream().filter(b::contains)
+        : b.stream().filter(a::contains)).collect(Collectors.toSet());
   }
 }
