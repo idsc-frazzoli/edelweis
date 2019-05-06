@@ -26,6 +26,7 @@ import ch.ethz.idsc.edelweis.prc.CommonLines;
 import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
 import ch.ethz.idsc.edelweis.prc.ExtDependencies;
 import ch.ethz.idsc.edelweis.prc.FunctionDepth;
+import ch.ethz.idsc.edelweis.prc.FunctionLength;
 import ch.ethz.idsc.edelweis.prc.NameCollisions;
 import ch.ethz.idsc.edelweis.prc.NoIdentifier;
 import ch.ethz.idsc.subare.util.HtmlUtf8;
@@ -114,6 +115,7 @@ public class Edelweis {
               submenu.appendln("<tr><td><a href='ghost.htm' target='content'>Unused</a><br/>");
             submenu.appendln("<tr><td><a href='common.htm' target='content'>Redundancy</a><br/>");
             submenu.appendln("<tr><td><a href='depth.htm' target='content'>Depth</a><br/>");
+            submenu.appendln("<tr><td><a href='function.htm' target='content'>Function</a><br/>");
             if (!duplicates.isEmpty())
               submenu.appendln("<tr><td><a href='names.htm' target='content'>Duplicate Names</a><br/>");
             if (0 < bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count())
@@ -167,6 +169,17 @@ public class Edelweis {
                 .sorted().collect(Collectors.toList()); //
             try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "depth.htm"))) {
               htmlUtf8.appendln("<h3>Depth</h3>");
+              htmlUtf8.appendln("<pre>");
+              list.forEach(htmlUtf8::appendln);
+              htmlUtf8.appendln("</pre>");
+            }
+          }
+          {
+            List<FunctionLength> list = bulkParser.codes().stream().filter(ParserJava.class::isInstance) //
+                .map(ParserJava.class::cast).map(FunctionLength::new) //
+                .sorted().collect(Collectors.toList()); //
+            try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "function.htm"))) {
+              htmlUtf8.appendln("<h3>Function</h3>");
               htmlUtf8.appendln("<pre>");
               list.forEach(htmlUtf8::appendln);
               htmlUtf8.appendln("</pre>");
