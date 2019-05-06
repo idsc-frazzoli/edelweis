@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis;
+package ch.ethz.idsc.edelweis.prc;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,8 +11,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.edelweis.BulkParser;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
-import ch.ethz.idsc.edelweis.util.Sets;
+import ch.ethz.idsc.edelweis.util.Intersection;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 
@@ -29,7 +30,7 @@ public class CommonLines {
     List<ParserJava> list = new ArrayList<>(map.keySet());
     for (int c0 = 0; c0 < list.size() - 1; ++c0)
       for (int c1 = c0 + 1; c1 < list.size(); ++c1) {
-        Set<String> set = Sets.intersect(map.get(list.get(c0)), map.get(list.get(c1)));
+        Set<String> set = Intersection.of(map.get(list.get(c0)), map.get(list.get(c1)));
         if (2 < set.size())
           result.put(list.get(c0).fileTitle() + " " + list.get(c1).fileTitle(), set.size());
       }
