@@ -21,6 +21,7 @@ public class CommonLines {
   private final Map<ParserJava, Set<String>> map;
   private final Map<String, Integer> result = new HashMap<>();
 
+  // TODO do not count lines with "@Override" etc.
   public CommonLines(Stream<BulkParser> bulkParsers) {
     map = bulkParsers.map(BulkParser::codes) //
         .flatMap(List::stream) //

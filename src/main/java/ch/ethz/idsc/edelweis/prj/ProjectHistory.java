@@ -23,7 +23,7 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.TableBuilder;
 
-public class ProjectHistory {
+/* package */ class ProjectHistory {
   private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
   /** today's date */
   private static final Date DATE = new Date();

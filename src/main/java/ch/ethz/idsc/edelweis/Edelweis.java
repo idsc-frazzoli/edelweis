@@ -40,7 +40,7 @@ public class Edelweis {
 
   // TODO list duplicates in central page (not per project)
   public static void main(String[] args) {
-    args = new String[] { "datahaki" };
+    args = new String[] { "demouser" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = session.exportFolder();
     session.build();
