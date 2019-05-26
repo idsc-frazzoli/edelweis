@@ -33,7 +33,7 @@ public class ParserJava extends ParserBase {
   private static final Predicate<String> COMMENT_PREDICATE = _string -> {
     final String string = _string.trim();
     return string.startsWith("//") //
-        || string.startsWith("/*") // does not apply to /* package */
+        || string.startsWith("/*") //
         || string.startsWith("*"); //
   };
   // ---
@@ -104,6 +104,14 @@ public class ParserJava extends ParserBase {
   public Stream<String> lines() {
     try {
       return ReadLines.of(file()).stream().filter(RELEVANT_JAVA);
+    } catch (Exception exception) {
+      throw new RuntimeException();
+    }
+  }
+
+  public Stream<String> comments() {
+    try {
+      return ReadLines.of(file()).stream().filter(COMMENT_PREDICATE);
     } catch (Exception exception) {
       throw new RuntimeException();
     }
