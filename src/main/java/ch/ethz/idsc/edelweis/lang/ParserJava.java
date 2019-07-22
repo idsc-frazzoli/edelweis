@@ -27,6 +27,8 @@ public class ParserJava extends ParserBase {
         && !string.startsWith("//") //
         && !string.startsWith("/**") // does not apply to /* package */
         && !string.startsWith("*") //
+    // ; //
+    // TODO only for latex
         && !string.startsWith("{") //
         && !string.startsWith("}"); //
   };
