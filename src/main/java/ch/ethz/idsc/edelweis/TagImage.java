@@ -12,7 +12,7 @@ import java.util.Properties;
 import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 
-import ch.ethz.idsc.edelweis.util.GraphicsUtil;
+import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.io.Import;
 
 /** image based on line count */

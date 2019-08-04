@@ -98,7 +98,7 @@ public class BulkParser {
               // System.out.println(file);
             }
             // replaceAll(file);
-            codes.add(new ParserJava(file));
+            codes.add(new ParserJava(file, ParserJava.RELEVANT_CODE));
           } else //
           if (filename.hasExtension("m"))
             codes.add(new ParserMatlab(file));
