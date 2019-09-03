@@ -90,7 +90,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       BulkParser bulkParser = entry.getValue();
       tableBuilder.appendRow(Tensors.vector(entry.getKey(), bulkParser.codes().size()));
     }
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   public Tensor lineCount() {
@@ -99,7 +99,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       BulkParser bulkParser = entry.getValue();
       tableBuilder.appendRow(Tensors.vector(entry.getKey(), bulkParser.totalLineCount()));
     }
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   public Tensor ratios() {
@@ -109,7 +109,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       Scalar ratio = RationalScalar.of(bulkParser.totalLineCount(), Math.max(1, bulkParser.codes().size()));
       tableBuilder.appendRow(RealScalar.of(entry.getKey()), ratio);
     }
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 
   public Tensor todos() {
@@ -119,6 +119,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       int todos = (int) bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count();
       tableBuilder.appendRow(Tensors.vector(entry.getKey(), todos));
     }
-    return tableBuilder.toTable();
+    return tableBuilder.getTable();
   }
 }

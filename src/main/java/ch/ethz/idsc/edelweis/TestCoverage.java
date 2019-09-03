@@ -5,6 +5,8 @@ import java.io.File;
 import java.util.Properties;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.edelweis.lang.ClassType;
+import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.edelweis.util.Filename;
 
 public class TestCoverage {
@@ -29,11 +31,16 @@ public class TestCoverage {
     else {
       Filename filename = new Filename(file);
       if (filename.hasExtension("java")) {
-        String string = file.toString();
-        String substring = string.substring(main.toString().length() + 1, string.length() - 5);
-        File testfile = new File(test, substring + "Test.java");
-        if (!testfile.isFile())
-          System.out.println(substring);
+        ParserJava parserJava = new ParserJava(file, ParserJava.RELEVANT_CODE);
+        if (parserJava.classType().equals(ClassType.INTERFACE)) {
+          // ---
+        } else {
+          String string = file.toString();
+          String substring = string.substring(main.toString().length() + 1, string.length() - 5);
+          File testfile = new File(test, substring + "Test.java");
+          if (!testfile.isFile())
+            System.out.println(substring);
+        }
       }
     }
   }
