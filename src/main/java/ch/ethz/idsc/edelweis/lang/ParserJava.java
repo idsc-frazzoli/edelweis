@@ -17,7 +17,7 @@ import ch.ethz.idsc.edelweis.util.ReadLines;
 public class ParserJava extends ParserBase {
   private static final String PACKAGE = "package ";
   private static final String IMPORT = "import ";
-  private static final Predicate<String> RELEVANT_JAVA = _string -> {
+  public static final Predicate<String> RELEVANT_CODE = _string -> {
     final String string = _string.trim();
     return !string.isEmpty() //
         && !string.equals(";") //
@@ -30,6 +30,17 @@ public class ParserJava extends ParserBase {
         && !string.startsWith("{") //
         && !string.startsWith("}"); //
   };
+  public static final Predicate<String> RELEVANT_TEX = _string -> {
+    final String string = _string.trim();
+    return !string.isEmpty() //
+        && !string.equals(";") //
+        && !string.startsWith(IMPORT) //
+        && !string.startsWith(PACKAGE) //
+        && !string.startsWith("@Override") //
+        && !string.startsWith("//") //
+        && !string.startsWith("/**") // does not apply to /* package */
+        && !string.startsWith("*");
+  };
   private static final Predicate<String> COMMENT_PREDICATE = _string -> {
     final String string = _string.trim();
     return string.startsWith("//") //
@@ -37,6 +48,7 @@ public class ParserJava extends ParserBase {
         || string.startsWith("*"); //
   };
   // ---
+  private final Predicate<String> relevant;
   private final int count;
   private final String identifier;
   private final String fileTitle;
@@ -46,8 +58,9 @@ public class ParserJava extends ParserBase {
   private final boolean isAbstract;
   private final boolean hasHeader;
 
-  public ParserJava(File file) {
+  public ParserJava(File file, Predicate<String> relevant) {
     super(file);
+    this.relevant = relevant;
     fileTitle = new Filename(file).title;
     List<String> lines = new ArrayList<>();
     try {
@@ -57,7 +70,7 @@ public class ParserJava extends ParserBase {
     }
     // final List<String> lines = ReadLines.of(file);
     hasHeader = !lines.isEmpty() && COMMENT_PREDICATE.test(lines.get(0));
-    count = (int) lines.stream().filter(RELEVANT_JAVA).count();
+    count = (int) lines.stream().filter(relevant).count();
     // if (file.getName().equals("CsvFormat.java")) {
     // lines.stream().filter(RELEVANT_JAVA).forEach(System.out::println);
     // }
@@ -103,7 +116,7 @@ public class ParserJava extends ParserBase {
 
   public Stream<String> lines() {
     try {
-      return ReadLines.of(file()).stream().filter(RELEVANT_JAVA);
+      return ReadLines.of(file()).stream().filter(relevant);
     } catch (Exception exception) {
       throw new RuntimeException();
     }

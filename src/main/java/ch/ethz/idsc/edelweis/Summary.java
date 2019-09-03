@@ -14,7 +14,7 @@ import java.util.Properties;
 
 import javax.swing.JLabel;
 
-import ch.ethz.idsc.edelweis.util.GraphicsUtil;
+import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.io.Import;
 
 public enum Summary {

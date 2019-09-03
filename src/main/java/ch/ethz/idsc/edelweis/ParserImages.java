@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.jfree.chart.JFreeChart;
 
-import ch.ethz.idsc.subare.util.plot.Histogram;
-import ch.ethz.idsc.subare.util.plot.VisualSet;
+import ch.ethz.idsc.sophus.util.plot.Histogram;
+import ch.ethz.idsc.sophus.util.plot.VisualSet;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
