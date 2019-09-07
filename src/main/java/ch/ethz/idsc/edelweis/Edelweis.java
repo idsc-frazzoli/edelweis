@@ -98,6 +98,7 @@ public class Edelweis {
                   .forEach(htmlUtf8::appendln);
               htmlUtf8.appendln("</pre>");
             }
+          List<String> syncTestFail = session.syncTestFail(bulkParser);
           try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"))) {
             submenu.appendln("<img src='../../tagimage/" + name + ".png'>");
             submenu.appendln("<img src='../../commonimage/" + name + ".png'>");
@@ -115,6 +116,8 @@ public class Edelweis {
             submenu.appendln("<tr><td><a href='function.htm' target='content'>Function</a><br/>");
             if (!duplicates.isEmpty())
               submenu.appendln("<tr><td><a href='names.htm' target='content'>Duplicate Names</a><br/>");
+            if (!syncTestFail.isEmpty())
+              submenu.appendln("<tr><td><a href='testsync.htm' target='content'>Test-Sync</a> " + smallgray(syncTestFail.size()));
             if (0 < bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count())
               submenu.appendln("<tr><td><a href='todos.htm' target='content'>Todos</a><br/>");
             // htmlUtf8.append("<a href='edits.htm' target='content'>Edits</a><br/>\n");
@@ -152,6 +155,12 @@ public class Edelweis {
             htmlUtf8.appendln("<h3>Redundancy</h3>");
             htmlUtf8.appendln("<pre>");
             commonLines.matrix().forEach(htmlUtf8::appendln);
+            htmlUtf8.appendln("</pre>");
+          }
+          try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "testsync.htm"))) {
+            htmlUtf8.appendln("<h3>Test-Sync</h3>");
+            htmlUtf8.appendln("<pre>");
+            syncTestFail.forEach(htmlUtf8::appendln);
             htmlUtf8.appendln("</pre>");
           }
           try {

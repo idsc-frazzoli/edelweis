@@ -3,9 +3,12 @@ package ch.ethz.idsc.edelweis;
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.TreeSet;
 
@@ -49,6 +52,24 @@ public class Session {
 
   public BulkParser bulkParser(String string) {
     return map.get(string);
+  }
+
+  public List<String> syncTestFail(BulkParser bulkParser) {
+    if (bulkParser.nonTest()) {
+      BulkParser bulkTest = map.get(bulkParser.name() + "-test");
+      if (Objects.nonNull(bulkTest)) {
+        TestCoverage testCoverage = new TestCoverage(bulkParser.root(), bulkTest.root());
+        return testCoverage.visitMain();
+      }
+    } else {
+      String name = bulkParser.name();
+      BulkParser bulkMain = map.get(name.substring(0, name.length() - 5));
+      if (Objects.nonNull(bulkMain)) {
+        TestCoverage testCoverage = new TestCoverage(bulkMain.root(), bulkParser.root());
+        return testCoverage.visitTest();
+      }
+    }
+    return Collections.emptyList();
   }
 
   public void showStats() {
