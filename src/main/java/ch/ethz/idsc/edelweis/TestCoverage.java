@@ -20,9 +20,9 @@ public class TestCoverage {
       throw new RuntimeException(main.toString());
     if (!test.isDirectory())
       throw new RuntimeException(test.toString());
-    visitMain(main);
+//    visitMain(main);
     System.out.println("---");
-    // visitTest(test);
+     visitTest(test);
   }
 
   private void visitMain(File file) {
