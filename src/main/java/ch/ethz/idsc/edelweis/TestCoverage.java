@@ -2,7 +2,8 @@
 package ch.ethz.idsc.edelweis;
 
 import java.io.File;
-import java.util.Properties;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Stream;
 
 import ch.ethz.idsc.edelweis.lang.ClassType;
@@ -13,21 +14,24 @@ public class TestCoverage {
   private final File main;
   private final File test;
 
-  public TestCoverage(File root) {
-    main = new File(root, "main");
-    test = new File(root, "test");
+  public TestCoverage(File main, File test) {
+    this.main = main;
+    this.test = test;
     if (!main.isDirectory())
       throw new RuntimeException(main.toString());
     if (!test.isDirectory())
       throw new RuntimeException(test.toString());
-//    visitMain(main);
-    System.out.println("---");
-     visitTest(test);
   }
 
-  private void visitMain(File file) {
+  public List<String> visitMain() {
+    List<String> list = new LinkedList<>();
+    visitMain(main, list);
+    return list;
+  }
+
+  private void visitMain(File file, List<String> list) {
     if (file.isDirectory())
-      Stream.of(file.listFiles()).sorted().forEach(this::visitMain);
+      Stream.of(file.listFiles()).sorted().forEach(f -> visitMain(f, list));
     else {
       Filename filename = new Filename(file);
       if (filename.hasExtension("java")) {
@@ -39,15 +43,21 @@ public class TestCoverage {
           String substring = string.substring(main.toString().length() + 1, string.length() - 5);
           File testfile = new File(test, substring + "Test.java");
           if (!testfile.isFile())
-            System.out.println(substring);
+            list.add(substring);
         }
       }
     }
   }
 
-  private void visitTest(File file) {
+  public List<String> visitTest() {
+    List<String> list = new LinkedList<>();
+    visitTest(test, list);
+    return list;
+  }
+
+  private void visitTest(File file, List<String> list) {
     if (file.isDirectory())
-      Stream.of(file.listFiles()).sorted().forEach(this::visitTest);
+      Stream.of(file.listFiles()).sorted().forEach(f -> visitTest(f, list));
     else {
       Filename filename = new Filename(file);
       if (filename.hasExtension("java") && filename.title.endsWith("Test")) {
@@ -56,21 +66,23 @@ public class TestCoverage {
         File testfile = new File(test, substring + ".java");
         File mainfile = new File(main, substring + ".java");
         if (!mainfile.isFile() && !testfile.isFile())
-          System.out.println(substring);
+          list.add(substring);
       }
     }
   }
 
   public static void main(String[] args) {
-    Properties properties = new UserProperties().load("unittest");
-    // List<BulkParser> bulkParsers = new ArrayList<>();
-    for (String project : properties.stringPropertyNames()) {
-      String directory = properties.getProperty(project);
-      // TODO filter out interfaces
-      new TestCoverage(new File(directory));
-      // BulkParser bulkParser = generate(new File(properties.getProperty(project)), project);
-      // bulkParsers.add(bulkParser);
-      // System.out.println(project);
+    TestCoverage testCoverage = new TestCoverage( //
+        new File("/home/datahaki/Projects/owl/src/main/java/ch/ethz/idsc/sophus"), //
+        new File("/home/datahaki/Projects/owl/src/test/java/ch/ethz/idsc/sophus"));
+    {
+      List<String> list = testCoverage.visitMain();
+      list.forEach(System.out::println);
+    }
+    System.out.println("===");
+    {
+      List<String> list = testCoverage.visitTest();
+      list.forEach(System.out::println);
     }
   }
 }

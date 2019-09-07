@@ -4,8 +4,6 @@ package ch.ethz.idsc.edelweis;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -37,17 +35,6 @@ public class Session {
   public void build() {
     for (String project : new TreeSet<>(projects.stringPropertyNames()))
       map.put(project, new BulkParser(new File(projects.getProperty(project)), project, ignore));
-  }
-
-  public List<BulkParserPair> testPairs() {
-    List<BulkParserPair> list = new LinkedList<>();
-    for (BulkParser bulkParser : map.values())
-      if (bulkParser.nonTest()) {
-        String test = bulkParser.name() + "-test";
-        if (map.containsKey(test))
-          list.add(new BulkParserPair(bulkParser, map.get(test)));
-      }
-    return list;
   }
 
   public String cutoff(String project) {

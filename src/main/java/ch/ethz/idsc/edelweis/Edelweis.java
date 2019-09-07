@@ -6,7 +6,6 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,8 +16,6 @@ import javax.imageio.ImageIO;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 
-import ch.ethz.idsc.edelweis.lang.ClassType;
-import ch.ethz.idsc.edelweis.lang.ParserCode;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.edelweis.lang.ParserText;
 import ch.ethz.idsc.edelweis.prc.CommentCount;
@@ -252,61 +249,6 @@ public class Edelweis {
     // TODO show @Override methods that are not final
     // missingHeaders(session);
     // unassociatedTests(session);
-  }
-
-  static void missingTests(Session session) {
-    System.out.println(session.testPairs().size());
-    for (BulkParserPair bulkParserPair : session.testPairs()) {
-      boolean hasOutput = false;
-      Map<String, ParserCode> testIndex = bulkParserPair.bp2.parserCodeIndex();
-      for (Entry<String, ParserCode> entry : bulkParserPair.bp1.parserCodeIndex().entrySet()) {
-        String key = entry.getKey();
-        ParserCode parserCode = entry.getValue();
-        if (parserCode instanceof ParserJava) {
-          ParserJava parserJava = (ParserJava) parserCode;
-          if (parserJava.isPublic() && //
-              !parserJava.isAbstract() && //
-              !ClassType.INTERFACE.equals(parserJava.classType())) {
-            String testKey = key.substring(0, key.length() - 5) + "Test.java";
-            if (!testIndex.containsKey(testKey)) {
-              if (!hasOutput) {
-                System.out.println(" --- " + bulkParserPair.bp1.name() + " --- ");
-                hasOutput = true;
-              }
-              System.out.println(key);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  static void unassociatedTests(Session session) {
-    System.out.println(session.testPairs().size());
-    for (BulkParserPair bulkParserPair : session.testPairs()) {
-      boolean hasOutput = false;
-      Map<String, ParserCode> testIndex = bulkParserPair.bp1.parserCodeIndex();
-      for (Entry<String, ParserCode> entry : bulkParserPair.bp2.parserCodeIndex().entrySet()) {
-        String key = entry.getKey();
-        ParserCode parserCode = entry.getValue();
-        if (parserCode instanceof ParserJava) {
-          ParserJava parserJava = (ParserJava) parserCode;
-          if (parserJava.isPublic() && //
-              !parserJava.isAbstract() && //
-              !ClassType.INTERFACE.equals(parserJava.classType())) {
-            // System.out.println();
-            String testKey = key.substring(0, key.length() - 9) + ".java";
-            if (!testIndex.containsKey(testKey)) {
-              if (!hasOutput) {
-                System.out.println(" --- " + bulkParserPair.bp1.name() + " --- ");
-                hasOutput = true;
-              }
-              System.out.println(key);
-            }
-          }
-        }
-      }
-    }
   }
 
   static void generateTallImages(File TAGIMAGE, Session session) {
