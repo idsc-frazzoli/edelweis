@@ -79,6 +79,14 @@ public class ParserJava extends ParserBase {
     String name = fname.substring(0, fname.indexOf('.'));
     // ---
     {
+      long defns = lines.stream() //
+          .filter(ClassType::lineHasDefinition) //
+          .count();
+      if (1 < defns) {
+        // System.out.println(defns + " " + file);
+      }
+    }
+    {
       Optional<String> optional = lines.stream() //
           .filter(ClassType.definition(name)) //
           .findFirst();

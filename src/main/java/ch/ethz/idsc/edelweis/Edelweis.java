@@ -36,6 +36,8 @@ public class Edelweis {
   }
 
   // TODO list duplicates in central page (not per project)
+  // TODO find tabs in text files
+  // TODO find non-unix line endings
   public static void main(String[] args) {
     args = new String[] { "datahaki" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
@@ -101,7 +103,7 @@ public class Edelweis {
           List<String> syncTestFail = session.syncTestFail(bulkParser);
           try (HtmlUtf8 submenu = HtmlUtf8.page(new File(dir, "menu.htm"))) {
             submenu.appendln("<img src='../../tagimage/" + name + ".png'>");
-            submenu.appendln("<img src='../../commonimage/" + name + ".png'>");
+            // submenu.appendln("<img src='../../commonimage/" + name + ".png'>");
             submenu.appendln("<br/><br/><small>branch</small> <b>" + bulkParser.branch() + "</b><br/><br/>");
             submenu.appendln("<table>");
             // ---

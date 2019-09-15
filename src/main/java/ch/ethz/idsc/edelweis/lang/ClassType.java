@@ -22,4 +22,15 @@ public enum ClassType {
   public static ClassType in(String string) {
     return Stream.of(values()).filter(ct -> string.contains(ct.lowercaseId)).findFirst().get();
   }
+
+  static boolean lineHasDefinition(String string) {
+    boolean value = false;
+    value |= string.startsWith("class ");
+    value |= string.startsWith("enum ");
+    value |= string.startsWith("interface ");
+    value |= string.startsWith("/* package */ class ");
+    value |= string.startsWith("/* package */ enum ");
+    value |= string.startsWith("/* package */ interface ");
+    return value;
+  }
 }

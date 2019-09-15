@@ -2,6 +2,7 @@
 package ch.ethz.idsc.edelweis;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -26,6 +27,7 @@ public class TestCoverage {
   public List<String> visitMain() {
     List<String> list = new LinkedList<>();
     visitMain(main, list);
+    Collections.sort(list);
     return list;
   }
 
@@ -52,6 +54,7 @@ public class TestCoverage {
   public List<String> visitTest() {
     List<String> list = new LinkedList<>();
     visitTest(test, list);
+    Collections.sort(list);
     return list;
   }
 
