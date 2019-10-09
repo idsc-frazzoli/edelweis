@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.edelweis.lang.ClassType;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
+import ch.ethz.idsc.edelweis.mav.JavaPredicates;
 import ch.ethz.idsc.edelweis.util.Filename;
 
 public class TestCoverage {
@@ -37,7 +38,7 @@ public class TestCoverage {
     else {
       Filename filename = new Filename(file);
       if (filename.hasExtension("java")) {
-        ParserJava parserJava = new ParserJava(file, ParserJava.RELEVANT_CODE);
+        ParserJava parserJava = new ParserJava(file, JavaPredicates.RELEVANT_CODE);
         if (parserJava.classType().equals(ClassType.INTERFACE)) {
           // ---
         } else {

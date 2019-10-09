@@ -15,21 +15,8 @@ import ch.ethz.idsc.edelweis.util.Filename;
 import ch.ethz.idsc.edelweis.util.ReadLines;
 
 public class ParserJava extends ParserBase {
-  private static final String PACKAGE = "package ";
-  private static final String IMPORT = "import ";
-  public static final Predicate<String> RELEVANT_CODE = _string -> {
-    final String string = _string.trim();
-    return !string.isEmpty() //
-        && !string.equals(";") //
-        && !string.startsWith(IMPORT) //
-        && !string.startsWith(PACKAGE) //
-        && !string.startsWith("@Override") //
-        && !string.startsWith("//") //
-        && !string.startsWith("/**") // does not apply to /* package */
-        && !string.startsWith("*") //
-        && !string.startsWith("{") //
-        && !string.startsWith("}"); //
-  };
+  public static final String PACKAGE = "package ";
+  public static final String IMPORT = "import ";
   public static final Predicate<String> RELEVANT_TEX = _string -> {
     final String string = _string.trim();
     return !string.isEmpty() //
@@ -83,7 +70,7 @@ public class ParserJava extends ParserBase {
           .filter(ClassType::lineHasDefinition) //
           .count();
       if (1 < defns) {
-        // System.out.println(defns + " " + file);
+        System.out.println(defns + " " + file);
       }
     }
     {

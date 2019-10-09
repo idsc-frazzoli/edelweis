@@ -21,6 +21,7 @@ import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.edelweis.lang.ParserMatlab;
 import ch.ethz.idsc.edelweis.lang.ParserPy;
 import ch.ethz.idsc.edelweis.lang.ParserText;
+import ch.ethz.idsc.edelweis.mav.JavaPredicates;
 import ch.ethz.idsc.edelweis.util.Filename;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
@@ -98,7 +99,7 @@ public class BulkParser {
               // System.out.println(file);
             }
             // replaceAll(file);
-            codes.add(new ParserJava(file, ParserJava.RELEVANT_CODE));
+            codes.add(new ParserJava(file, JavaPredicates.RELEVANT_CODE));
           } else //
           if (filename.hasExtension("m"))
             codes.add(new ParserMatlab(file));
