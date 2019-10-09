@@ -32,6 +32,7 @@ class JavaFile {
       String string = optional.get();
       return string.substring(8, string.length() - 1);
     }
+    System.err.println(file);
     return null;
   }
 

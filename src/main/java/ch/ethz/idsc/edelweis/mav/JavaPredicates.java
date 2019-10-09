@@ -18,6 +18,6 @@ public enum JavaPredicates {
         && !string.startsWith("/**") // does not apply to /* package */
         && !string.startsWith("*") //
         && !string.startsWith("{") //
-        && !string.startsWith("}"); //
+        && !string.startsWith("}"); // ignores "} else ... "
   };
 }
