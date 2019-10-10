@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-/**/ enum RunMavenIndex {
+/**/ enum DatahakiMavenIndex {
   ;
   static MavenCrossing gokart() {
     MavenCrossing mavenCrossing = new MavenCrossing();
@@ -35,7 +35,7 @@ import java.io.IOException;
     return mavenCrossing;
   }
 
-  static MavenCrossing nocturne() {
+  public static MavenCrossing nocturne() {
     MavenCrossing mavenCrossing = new MavenCrossing();
     mavenCrossing.addProject("ch.ethz.idsc.nocturne");
     // ---
@@ -46,7 +46,7 @@ import java.io.IOException;
   public static void main(String[] args) throws FileNotFoundException, IOException {
     // 116521
     MavenCrossing mavenCrossing = gokart();
-    mavenCrossing.run();
+    mavenCrossing.compile();
     // amodeus();
     // nocturne();
   }

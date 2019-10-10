@@ -4,7 +4,11 @@ package ch.ethz.idsc.edelweis.git;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+import java.util.NavigableMap;
+import java.util.StringTokenizer;
+import java.util.TreeMap;
 
 import ch.ethz.idsc.edelweis.util.Run;
 
@@ -29,50 +33,66 @@ public class Git {
     return null;
   }
 
+  /** @param directory
+   * @return
+   * @throws Exception */
+  public static Git of(File directory) {
+    if (new File(directory, ".git").exists())
+      return new Git(directory);
+    throw new UnsupportedOperationException();
+  }
+
+  /** @param directory
+   * @return
+   * @throws Exception */
+  public static Git requireClean(File directory) {
+    Git git = of(directory);
+    if (git.isClean())
+      return git;
+    throw new UnsupportedOperationException();
+  }
+
   // ---
   private final File directory;
 
-  public Git(File directory) {
+  private Git(File directory) {
     this.directory = directory;
   }
 
-  public boolean hint() {
-    if (!new File(directory, ".git").exists())
-      System.err.println("warning: .git directory does not exist in given directory");
-    // ---
-    File gitIgnore = new File(directory, ".gitignore");
-    if (!gitIgnore.exists()) {
-      // PrintStream myPrintStream = new PrintStream(gitIgnore);
-      // myPrintStream.println(".gitignore");
-      // myPrintStream.println("sha.properties");
-      // myPrintStream.close();
-    }
-    // myManager = new Manager(new File(myDirectory, "sha.properties"));
-    return false;
+  public boolean isClean() {
+    return run("status", "-s").isEmpty();
   }
 
+  /** Example:
+   * 2019-03-21 c2b6ee0 organize imports, code format
+   * 
+   * @return */
   public List<String> log() {
-    return git("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
+    return run("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
   }
 
-  public List<String> logSha1() {
-    return git("log", "--no-merges", "--pretty=format:%ad %H", "--date=short");
+  /** @return navigable map that associates date to sha1 */
+  public NavigableMap<Date, String> logSha1() {
+    NavigableMap<Date, String> navigableMap = new TreeMap<>();
+    for (String string : run("log", "--no-merges", "--pretty=format:%ad %H", "--date=unix")) {
+      StringTokenizer stringTokenizer = new StringTokenizer(string);
+      // the milliseconds since January 1, 1970, 00:00:00 GMT.
+      long unix_ms = Long.parseLong(stringTokenizer.nextToken()) * 1000;
+      navigableMap.put(new Date(unix_ms), stringTokenizer.nextToken());
+    }
+    return navigableMap;
   }
 
   public String branch() {
-    return git("rev-parse", "--abbrev-ref", "HEAD").get(0);
+    return run("rev-parse", "--abbrev-ref", "HEAD").get(0);
   }
 
   public String currentCommitSha1() {
-    return git("rev-parse", "HEAD").get(0);
+    return run("rev-parse", "HEAD").get(0);
   }
 
-  public boolean isClean() {
-    return git("status", "-s").isEmpty();
-  }
-
-  public void checkout(String string) throws Exception {
-    process(new ProcessBuilder(getExecutable(), "checkout", string));
+  public void checkout(String string) {
+    run("checkout", string);
   }
 
   // private void init() throws Exception {
@@ -108,7 +128,7 @@ public class Git {
   // myManager.manifest();
   // }
   // }
-  private List<String> git(String... strings) {
+  private List<String> run(String... strings) {
     List<String> list = new ArrayList<>();
     list.add(getExecutable());
     list.addAll(Arrays.asList(strings));
@@ -120,10 +140,5 @@ public class Git {
       exception.printStackTrace();
     }
     throw new RuntimeException();
-  }
-
-  private void process(ProcessBuilder processBuilder) throws Exception {
-    processBuilder.directory(directory);
-    Run.of(processBuilder);
   }
 }

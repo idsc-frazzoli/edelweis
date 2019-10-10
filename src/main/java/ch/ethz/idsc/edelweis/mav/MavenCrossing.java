@@ -26,7 +26,7 @@ public class MavenCrossing {
     repos.add(repo);
   }
 
-  public void run() throws FileNotFoundException, IOException {
+  public void compile() throws FileNotFoundException, IOException {
     for (File repo : repos) {
       MavenPackageIndex mavenPackageIndex = MavenPackageIndex.of(repo);
       for (JavaFile javaFile : mavenPackageIndex.javaFiles()) {
@@ -44,17 +44,49 @@ public class MavenCrossing {
         }
       }
     }
+  }
+
+  /** @return total file count of all projects */
+  public int fileCount() {
+    return map.values().stream().mapToInt(List::size).sum();
+  }
+
+  /** @return total line count of all projects */
+  public int lineCount() {
+    return map.values().stream() //
+        .flatMap(List::stream) //
+        .mapToInt(javaFile -> javaFile.count(JavaPredicates.RELEVANT_CODE)) //
+        .sum();
+  }
+
+  /** @return total file count of all projects */
+  public int fileCount(boolean isMain) {
+    return (int) map.values().stream() //
+        .flatMap(List::stream) //
+        .filter(javaFile -> javaFile.isMain() == isMain) //
+        .count();
+  }
+
+  /** @return total line count of all projects */
+  public int lineCount(boolean isMain) {
+    return map.values().stream() //
+        .flatMap(List::stream) //
+        .filter(javaFile -> javaFile.isMain() == isMain) //
+        .mapToInt(javaFile -> javaFile.count(JavaPredicates.RELEVANT_CODE)) //
+        .sum();
+  }
+
+  public void print() {
     int lineCount = 0;
     for (Entry<String, List<JavaFile>> entry : map.entrySet()) {
       String project = entry.getKey();
       List<JavaFile> list = entry.getValue();
       System.out.println(project + " " + list.size());
-      int sum = list.stream().mapToInt(jf -> jf.count(JavaPredicates.RELEVANT_CODE)).sum();
+      int sum = list.stream().mapToInt(javaFile -> javaFile.count(JavaPredicates.RELEVANT_CODE)).sum();
       System.out.println(sum);
       lineCount += sum;
     }
-    int fileCount = map.values().stream().mapToInt(List::size).sum();
-    System.out.println("fileCount=" + fileCount);
+    System.out.println("fileCount=" + fileCount());
     System.out.println("lineCount=" + lineCount);
   }
 }

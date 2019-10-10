@@ -45,7 +45,7 @@ public class BulkParser {
     this.name = name;
     test = name.endsWith("-test");
     this.ignore = ignore;
-    git = new Git(root);
+    git = Git.of(root);
     branch = git.branch();
     visit(root);
   }
