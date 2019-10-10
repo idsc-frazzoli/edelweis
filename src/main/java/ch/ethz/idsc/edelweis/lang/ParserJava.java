@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.edelweis.mav.JavaPredicates;
 import ch.ethz.idsc.edelweis.util.Filename;
 import ch.ethz.idsc.edelweis.util.ReadLines;
 
@@ -27,12 +28,6 @@ public class ParserJava extends ParserBase {
         && !string.startsWith("//") //
         && !string.startsWith("/**") // does not apply to /* package */
         && !string.startsWith("*");
-  };
-  private static final Predicate<String> COMMENT_PREDICATE = _string -> {
-    final String string = _string.trim();
-    return string.startsWith("//") //
-        || string.startsWith("/*") //
-        || string.startsWith("*"); //
   };
   // ---
   private final Predicate<String> relevant;
@@ -56,7 +51,7 @@ public class ParserJava extends ParserBase {
       exception.printStackTrace();
     }
     // final List<String> lines = ReadLines.of(file);
-    hasHeader = !lines.isEmpty() && COMMENT_PREDICATE.test(lines.get(0));
+    hasHeader = !lines.isEmpty() && JavaPredicates.COMMENT_PREDICATE.test(lines.get(0));
     count = (int) lines.stream().filter(relevant).count();
     // if (file.getName().equals("CsvFormat.java")) {
     // lines.stream().filter(RELEVANT_JAVA).forEach(System.out::println);
@@ -119,7 +114,7 @@ public class ParserJava extends ParserBase {
 
   public Stream<String> comments() {
     try {
-      return ReadLines.of(file()).stream().filter(COMMENT_PREDICATE);
+      return ReadLines.of(file()).stream().filter(JavaPredicates.COMMENT_PREDICATE);
     } catch (Exception exception) {
       throw new RuntimeException();
     }

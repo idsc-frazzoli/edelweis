@@ -20,4 +20,10 @@ public enum JavaPredicates {
         && !string.startsWith("{") //
         && !string.startsWith("}"); // ignores "} else ... "
   };
+  public static final Predicate<String> COMMENT_PREDICATE = _string -> {
+    final String string = _string.trim();
+    return string.startsWith("//") //
+        || string.startsWith("/**") //
+        || string.startsWith("*"); //
+  };
 }

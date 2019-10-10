@@ -1,8 +1,10 @@
+// code by jph
 package ch.ethz.idsc.edelweis.mav;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,20 +15,17 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class MavenCrossing {
-  private final List<String> projects = new LinkedList<>();
-  private final List<File> repos = new LinkedList<>();
+  private final List<String> projects;
   private final Map<String, List<JavaFile>> map = new HashMap<>();
 
-  public void addProject(String project) {
-    projects.add(project);
-    map.put(project, new LinkedList<>());
+  public MavenCrossing(List<String> projects) {
+    this.projects = projects;
   }
 
-  public void addRepo(File repo) {
-    repos.add(repo);
-  }
-
-  public void compile() throws FileNotFoundException, IOException {
+  // TODO bad API design
+  public void compile(Collection<File> repos) throws FileNotFoundException, IOException {
+    projects.forEach(project -> map.put(project, new LinkedList<>()));
+    // ---
     for (File repo : repos) {
       MavenPackageIndex mavenPackageIndex = MavenPackageIndex.of(repo);
       for (JavaFile javaFile : mavenPackageIndex.javaFiles()) {
