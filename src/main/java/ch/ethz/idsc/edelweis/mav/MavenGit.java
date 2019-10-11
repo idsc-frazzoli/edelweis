@@ -32,7 +32,7 @@ public class MavenGit implements AutoCloseable {
     return success;
   }
 
-  @Override
+  @Override // from AutoCloseable
   public void close() throws Exception {
     System.out.println("checkout " + branch);
     git.checkout(branch);

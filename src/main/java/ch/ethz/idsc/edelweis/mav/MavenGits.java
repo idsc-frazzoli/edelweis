@@ -24,28 +24,30 @@ public class MavenGits implements AutoCloseable {
         .allMatch(mavenGit -> mavenGit.checkout(millis));
   }
 
-  @Override
+  @Override // from AutoCloseable
   public void close() throws Exception {
-    map.values().stream().forEach(mavenGit -> {
-      try {
-        mavenGit.close();
-      } catch (Exception exception) {
-        exception.printStackTrace();
-      }
-    });
+    map.values().stream() //
+        .forEach(mavenGit -> {
+          try {
+            mavenGit.close();
+          } catch (Exception exception) {
+            exception.printStackTrace();
+          }
+        });
   }
 
   public static void main(String[] args) throws Exception {
-    ProjectStructure projectStructure = DatahakiMavenIndex.NOCTURNE;
+    ProjectDatahaki projectStructure = ProjectDatahaki.GOKART;
     try (MavenGits mavenGits = new MavenGits(projectStructure.repos())) {
-      long currentTimeMillis = System.currentTimeMillis();
+      long currentTimeMillis = 1570762236630L; // System.currentTimeMillis();
       long delta = 7 * 24 * 60 * 60 * 1000;
       int weeksago = 0;
       TableBuilder tableBuilder = new TableBuilder();
       while (mavenGits.checkout(currentTimeMillis) //
-          && -8 < weeksago) {
-        MavenCrossing mavenCrossing = new MavenCrossing(projectStructure.projects());
-        mavenCrossing.compile(projectStructure.repos());
+          && -(4 * 12) < weeksago) {
+        MavenCrossing mavenCrossing = new MavenCrossing( //
+            projectStructure.projects(), //
+            projectStructure.repos());
         tableBuilder.appendRow(Tensors.vector( //
             weeksago, //
             currentTimeMillis / 1000, //
@@ -57,7 +59,7 @@ public class MavenGits implements AutoCloseable {
         --weeksago;
         currentTimeMillis -= delta;
       }
-      Export.of(HomeDirectory.Documents("nocturne.csv"), tableBuilder.getTable());
+      Export.of(HomeDirectory.Documents(projectStructure.name() + ".csv"), tableBuilder.getTable());
     }
   }
 }

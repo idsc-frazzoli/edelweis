@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,15 +16,11 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class MavenCrossing {
-  private final List<String> projects;
+  // private final List<String> projects;
   private final Map<String, List<JavaFile>> map = new HashMap<>();
 
-  public MavenCrossing(List<String> projects) {
-    this.projects = projects;
-  }
-
-  // TODO bad API design
-  public void compile(Collection<File> repos) throws FileNotFoundException, IOException {
+  public MavenCrossing(List<String> projects, Collection<File> repos) throws FileNotFoundException, IOException {
+    // this.projects = projects;
     projects.forEach(project -> map.put(project, new LinkedList<>()));
     // ---
     for (File repo : repos) {
@@ -75,14 +72,17 @@ public class MavenCrossing {
         .sum();
   }
 
+  public List<JavaFile> files(String project) {
+    return Collections.unmodifiableList(map.get(project));
+  }
+
   public void print() {
     int lineCount = 0;
     for (Entry<String, List<JavaFile>> entry : map.entrySet()) {
       String project = entry.getKey();
       List<JavaFile> list = entry.getValue();
-      System.out.println(project + " " + list.size());
       int sum = list.stream().mapToInt(javaFile -> javaFile.count(JavaPredicates.RELEVANT_CODE)).sum();
-      System.out.println(sum);
+      System.out.println(String.format("%20s %5d %6d", project, list.size(), sum));
       lineCount += sum;
     }
     System.out.println("fileCount=" + fileCount());

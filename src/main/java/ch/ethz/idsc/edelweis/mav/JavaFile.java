@@ -7,11 +7,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import ch.ethz.idsc.edelweis.util.ReadLines;
 
-class JavaFile {
+/* package */ class JavaFile {
   private static final String PACKAGE = "package ";
+  private static final String IMPORT = "import ";
   // ---
   private final File file;
   private final boolean main;
@@ -37,8 +39,15 @@ class JavaFile {
   }
 
   public int count(Predicate<String> predicate) {
-    // lines.stream().filter(predicate).forEach(System.out::println);
     return (int) lines.stream().filter(predicate).count();
+  }
+
+  public List<String> imports() {
+    return lines.stream() //
+        .filter(string -> string.startsWith(IMPORT)) //
+        .map(String::trim) //
+        .map(string -> string.substring(7, string.length() - 1)) //
+        .collect(Collectors.toList());
   }
 
   public File getFile() {
