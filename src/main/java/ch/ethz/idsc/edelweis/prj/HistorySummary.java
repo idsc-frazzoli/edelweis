@@ -28,11 +28,7 @@ enum HistorySummary {
     // ---
     System.out.println("checking all clean...");
     for (String project : new TreeSet<>(session.history.stringPropertyNames())) {
-      Git git = new Git(new File(session.history.getProperty(project)));
-      if (!git.isClean()) {
-        System.err.println("project=" + project);
-        return;
-      }
+      Git.requireClean(new File(session.history.getProperty(project)));
     }
     // ---
     VisualSet lines = new VisualSet();

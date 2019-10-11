@@ -33,8 +33,8 @@ public enum ImageLineCount {
   static final int WIDTH = 256;
   private static final ScalarTensorFunction COLOR_DATA_GRADIENT = ColorDataGradients.STARRYNIGHT;
 
-  public static BufferedImage generate(BulkParser bulkParser, int width) {
-    Distribution distribution = HistogramDistribution.of(LINES_CLIP.of(bulkParser.allLineCounts()), RealScalar.ONE);
+  public static BufferedImage generate(Tensor allLineCounts, int width) {
+    Distribution distribution = HistogramDistribution.of(LINES_CLIP.of(allLineCounts), RealScalar.ONE);
     Tensor array = Subdivide.of(0, 1.0, width - 1) //
         .map(InverseCDF.of(distribution)::quantile) //
         .map(LINES_CLIP::rescale);
@@ -55,13 +55,13 @@ public enum ImageLineCount {
     GraphicsUtil.setQualityHigh(graphics);
     {
       graphics.setColor(Color.WHITE);
-      Scalar total = Round.FUNCTION.apply(Total.of(bulkParser.allLineCounts()).divide(RealScalar.of(1000)).Get());
-      graphics.drawString(String.format("%d files, %sk lines", bulkParser.allLineCounts().length(), total), 2, 13);
+      Scalar total = Round.FUNCTION.apply(Total.of(allLineCounts).divide(RealScalar.of(1000)).Get());
+      graphics.drawString(String.format("%d files, %sk lines", allLineCounts.length(), total), 2, 13);
     }
     {
       graphics.setFont(new Font(Font.DIALOG, Font.PLAIN, 10));
       graphics.setColor(Color.LIGHT_GRAY);
-      Scalar median = Median.of(bulkParser.allLineCounts()).Get();
+      Scalar median = Median.of(allLineCounts).Get();
       graphics.drawString(String.format("median: %s lines per file", Round.of(median)), 2, 30);
     }
     {

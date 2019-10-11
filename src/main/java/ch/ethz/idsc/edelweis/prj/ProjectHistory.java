@@ -10,9 +10,7 @@ import java.util.Map.Entry;
 import java.util.NavigableMap;
 import java.util.Objects;
 import java.util.Properties;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
-import java.util.concurrent.TimeUnit;
 
 import ch.ethz.idsc.edelweis.BulkParser;
 import ch.ethz.idsc.edelweis.git.Git;
@@ -37,27 +35,26 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
   private final NavigableMap<Integer, BulkParser> bulkParsers = new TreeMap<>();
 
   public ProjectHistory(File root, String name, Properties ignore, String cutoff) {
-    git = new Git(root);
-    if (!git.isClean())
-      throw new RuntimeException();
+    git = Git.requireClean(root);
     // TODO style
     currentBranch = Objects.requireNonNull(git.branch());
     System.out.println("currentBranch=" + currentBranch);
-    for (String line : git.logSha1()) {
-      StringTokenizer stringTokenizer = new StringTokenizer(line);
-      String date = stringTokenizer.nextToken();
-      String sha1 = stringTokenizer.nextToken();
-      if (cutoff.compareTo(date) < 0)
-        try {
-          int days = (int) TimeUnit.DAYS.convert( //
-              DATE_FORMAT.parse(date).getTime() - DATE.getTime(), //
-              TimeUnit.MILLISECONDS);
-          if (!navigableMap.containsKey(days))
-            navigableMap.put(days, sha1);
-        } catch (Exception exception) {
-          new RuntimeException();
-        }
-    }
+    // FIXME big time
+    // for (String line : git.logSha1().subMap(fromKey, toKey)) {
+    //// StringTokenizer stringTokenizer = new StringTokenizer(line);
+    //// String date = stringTokenizer.nextToken();
+    //// String sha1 = stringTokenizer.nextToken();
+    // if (cutoff.compareTo(date) < 0)
+    // try {
+    // int days = (int) TimeUnit.DAYS.convert( //
+    // DATE_FORMAT.parse(date).getTime() - DATE.getTime(), //
+    // TimeUnit.MILLISECONDS);
+    // if (!navigableMap.containsKey(days))
+    // navigableMap.put(days, sha1);
+    // } catch (Exception exception) {
+    // new RuntimeException();
+    // }
+    // }
     System.out.println("start days ago: " + navigableMap.firstKey());
     int ago = 0;
     while (AGE_MIN <= ago) {

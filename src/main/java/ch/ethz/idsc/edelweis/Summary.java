@@ -42,7 +42,7 @@ public enum Summary {
         desc = "<no description>";
       // System.out.println(desc);
       System.out.println(proj);
-      BufferedImage tag = ImageLineCount.generate(map.get(proj), ImageLineCount.WIDTH);
+      BufferedImage tag = ImageLineCount.generate(map.get(proj).allLineCounts(), ImageLineCount.WIDTH);
       // ImageIO.read(new File(Main.ICONS_LINES, proj + ".png"));
       // System.out.println(tag);
       graphics.drawImage(tag, SEP_X, piy, new JLabel());
