@@ -44,7 +44,8 @@ import java.util.stream.Collectors;
       for (String project : projectStructure.projects()) {
         long count = map2.containsKey(project) ? map2.get(project) : 0;
         if (0 < count) { //
-          String format = String.format("%7s %d", project.substring(project.lastIndexOf('.') + 1), count);
+          String name = project.substring(project.lastIndexOf('.') + 1);
+          String format = String.format("%7s %d", name, count);
           if (self.equals(project) || //
               Dependencies.getProject(self).contains(project)) {
             System.out.println(format);
