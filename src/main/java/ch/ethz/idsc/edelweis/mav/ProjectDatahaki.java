@@ -21,8 +21,8 @@ import java.util.List;
       return Arrays.asList( //
           "ch.ethz.idsc.tensor", //
           "ch.ethz.idsc.subare", //
-          "ch.ethz.idsc.owl", //
           "ch.ethz.idsc.sophus", //
+          "ch.ethz.idsc.owl", //
           "ch.ethz.idsc.retina", //
           "ch.ethz.idsc.gokart", //
           "ch.ethz.idsc.demo");
