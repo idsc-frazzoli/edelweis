@@ -55,14 +55,6 @@ public class Git {
     return run("status", "-s").isEmpty();
   }
 
-  /** Example:
-   * 2019-03-21 c2b6ee0 organize imports, code format
-   * 
-   * @return */
-  public List<String> log() {
-    return run("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
-  }
-
   /** @return navigable map that associates date to sha1 */
   public NavigableMap<Date, String> logSha1() {
     NavigableMap<Date, String> navigableMap = new TreeMap<>();
@@ -73,6 +65,14 @@ public class Git {
       navigableMap.put(new Date(unix_ms), stringTokenizer.nextToken());
     }
     return navigableMap;
+  }
+
+  /** Example:
+   * 2019-03-21 c2b6ee0 organize imports, code format
+   * 
+   * @return */
+  public List<String> log() {
+    return run("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
   }
 
   public String branch() {
