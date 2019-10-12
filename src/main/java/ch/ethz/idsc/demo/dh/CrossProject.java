@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis.mav;
+package ch.ethz.idsc.demo.dh;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -11,9 +11,15 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import ch.ethz.idsc.edelweis.mvn.JavaFile;
+import ch.ethz.idsc.edelweis.mvn.MavenCrossing;
+import ch.ethz.idsc.edelweis.mvn.MavenRepoStructure;
+import ch.ethz.idsc.edelweis.mvn.ProjectWrap;
+import ch.ethz.idsc.edelweis.mvn.RepoStatus;
+
 /* package */ class CrossProject {
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    ProjectStructure projectStructure = ProjectDatahaki.GOKART;
+    MavenRepoStructure projectStructure = DatahakiProjects.GOKART;
     projectStructure.repos().forEach(RepoStatus::print);
     MavenCrossing mavenCrossing = new MavenCrossing(projectStructure.projects(), projectStructure.repos());
     ProjectWrap projectWrap = new ProjectWrap(projectStructure.projects());

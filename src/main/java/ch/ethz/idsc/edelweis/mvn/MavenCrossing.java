@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis.mav;
+package ch.ethz.idsc.edelweis.mvn;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,11 +16,9 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class MavenCrossing {
-  // private final List<String> projects;
   private final Map<String, List<JavaFile>> map = new HashMap<>();
 
   public MavenCrossing(List<String> projects, Collection<File> repos) throws FileNotFoundException, IOException {
-    // this.projects = projects;
     projects.forEach(project -> map.put(project, new LinkedList<>()));
     // ---
     for (File repo : repos) {
@@ -47,28 +45,28 @@ public class MavenCrossing {
     return map.values().stream().mapToInt(List::size).sum();
   }
 
-  /** @return total line count of all projects */
-  public int lineCount() {
-    return map.values().stream() //
-        .flatMap(List::stream) //
-        .mapToInt(javaFile -> javaFile.count(JavaPredicates.RELEVANT_CODE)) //
-        .sum();
-  }
-
   /** @return total file count of all projects */
-  public int fileCount(boolean isMain) {
+  public int fileCount(Predicate<JavaFile> predicate) {
     return (int) map.values().stream() //
         .flatMap(List::stream) //
-        .filter(javaFile -> javaFile.isMain() == isMain) //
+        .filter(predicate) //
         .count();
   }
 
   /** @return total line count of all projects */
-  public int lineCount(boolean isMain) {
+  public int lineCount() {
     return map.values().stream() //
         .flatMap(List::stream) //
-        .filter(javaFile -> javaFile.isMain() == isMain) //
-        .mapToInt(javaFile -> javaFile.count(JavaPredicates.RELEVANT_CODE)) //
+        .mapToInt(javaFile -> javaFile.count(JavaPredicates.CODE)) //
+        .sum();
+  }
+
+  /** @return total line count of all projects */
+  public int lineCount(Predicate<JavaFile> predicate, Predicate<String> linePredicate) {
+    return map.values().stream() //
+        .flatMap(List::stream) //
+        .filter(predicate) //
+        .mapToInt(javaFile -> javaFile.count(linePredicate)) //
         .sum();
   }
 
@@ -81,7 +79,7 @@ public class MavenCrossing {
     for (Entry<String, List<JavaFile>> entry : map.entrySet()) {
       String project = entry.getKey();
       List<JavaFile> list = entry.getValue();
-      int sum = list.stream().mapToInt(javaFile -> javaFile.count(JavaPredicates.RELEVANT_CODE)).sum();
+      int sum = list.stream().mapToInt(javaFile -> javaFile.count(JavaPredicates.CODE)).sum();
       System.out.println(String.format("%20s %5d %6d", project, list.size(), sum));
       lineCount += sum;
     }

@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.NavigableMap;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.TreeMap;
 
@@ -36,39 +37,22 @@ public class Git {
   /** @param directory
    * @return
    * @throws Exception */
-  public static Git of(File directory) {
-    if (new File(directory, ".git").exists())
-      return new Git(directory);
-    throw new UnsupportedOperationException();
-  }
-
-  /** @param directory
-   * @return
-   * @throws Exception */
   public static Git requireClean(File directory) {
-    Git git = of(directory);
+    Git git = new Git(directory);
     if (git.isClean())
       return git;
-    throw new UnsupportedOperationException();
+    throw new IllegalStateException("git status");
   }
 
   // ---
   private final File directory;
 
   private Git(File directory) {
-    this.directory = directory;
+    this.directory = Objects.requireNonNull(directory);
   }
 
   public boolean isClean() {
     return run("status", "-s").isEmpty();
-  }
-
-  /** Example:
-   * 2019-03-21 c2b6ee0 organize imports, code format
-   * 
-   * @return */
-  public List<String> log() {
-    return run("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
   }
 
   /** @return navigable map that associates date to sha1 */
@@ -81,6 +65,14 @@ public class Git {
       navigableMap.put(new Date(unix_ms), stringTokenizer.nextToken());
     }
     return navigableMap;
+  }
+
+  /** Example:
+   * 2019-03-21 c2b6ee0 organize imports, code format
+   * 
+   * @return */
+  public List<String> log() {
+    return run("log", "--no-merges", "--pretty=format:%ad %h %s", "--date=short");
   }
 
   public String branch() {

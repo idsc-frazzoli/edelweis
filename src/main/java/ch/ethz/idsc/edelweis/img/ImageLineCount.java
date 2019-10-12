@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis;
+package ch.ethz.idsc.edelweis.img;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -30,7 +30,7 @@ import ch.ethz.idsc.tensor.sca.Round;
 public enum ImageLineCount {
   ;
   private static final Clip LINES_CLIP = Clips.interval(0, 180);
-  static final int WIDTH = 256;
+  public static final int WIDTH = 256;
   private static final ScalarTensorFunction COLOR_DATA_GRADIENT = ColorDataGradients.STARRYNIGHT;
 
   public static BufferedImage generate(Tensor allLineCounts, int width) {

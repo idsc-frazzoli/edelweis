@@ -14,6 +14,7 @@ import java.util.Properties;
 
 import javax.swing.JLabel;
 
+import ch.ethz.idsc.edelweis.img.ImageLineCount;
 import ch.ethz.idsc.owl.gui.GraphicsUtil;
 import ch.ethz.idsc.tensor.io.Import;
 

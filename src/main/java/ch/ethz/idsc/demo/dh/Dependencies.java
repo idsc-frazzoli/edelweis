@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis.mav;
+package ch.ethz.idsc.demo.dh;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-public enum Dependencies {
+/* package */ enum Dependencies {
   ;
   private static final Map<String, Set<String>> PERMITTED = new HashMap<>();
   static {

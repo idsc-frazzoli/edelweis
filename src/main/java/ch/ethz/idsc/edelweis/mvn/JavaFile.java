@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis.mav;
+package ch.ethz.idsc.edelweis.mvn;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,7 +11,11 @@ import java.util.stream.Collectors;
 
 import ch.ethz.idsc.edelweis.util.ReadLines;
 
-/* package */ class JavaFile {
+public class JavaFile {
+  public static final Predicate<JavaFile> ALL = javaFile -> true;
+  public static final Predicate<JavaFile> MAIN = JavaFile::isMain;
+  public static final Predicate<JavaFile> TEST = javaFile -> !javaFile.isMain();
+  // ---
   private static final String PACKAGE = "package ";
   private static final String IMPORT = "import ";
   // ---

@@ -1,11 +1,13 @@
 // code by jph
-package ch.ethz.idsc.edelweis.mav;
+package ch.ethz.idsc.demo.dh;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-/* package */ enum ProjectDatahaki implements ProjectStructure {
+import ch.ethz.idsc.edelweis.mvn.MavenRepoStructure;
+
+/* package */ enum DatahakiProjects implements MavenRepoStructure {
   GOKART() {
     @Override
     public List<File> repos() {

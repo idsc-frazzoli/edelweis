@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis;
+package ch.ethz.idsc.edelweis.img;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -26,10 +26,6 @@ public enum TagImage {
   private static final int HEIGHT = ICON + 4;
   private static final File GET_ICONS = new File("get", "icons");
 
-  public static BufferedImage of(BulkParser bulkParser) {
-    return of(bulkParser.name(), bulkParser.allLineCounts());
-  }
-
   public static BufferedImage of(String name, Tensor allLineCounts) {
     String icon = name.endsWith("-test") //
         ? name.substring(0, name.length() - 5)
@@ -53,9 +49,6 @@ public enum TagImage {
       String desc = properties.getProperty(name);
       if (Objects.isNull(desc))
         desc = "<no description>";
-      // System.out.println(desc);
-      System.out.println(name);
-      // System.out.println(tag);
       graphics.drawImage(iconImage, 2, 2, ICON, ICON, null);
       graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 15));
       graphics.setColor(Color.BLACK);

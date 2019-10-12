@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis;
+package ch.ethz.idsc.edelweis.img;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -34,8 +34,8 @@ public enum ImageAge {
   private static final int WIDTH = 256;
   private static final ScalarTensorFunction COLOR_DATA_GRADIENT = ColorDataGradients.DENSITY;
 
-  public static void generate(File directory, BulkParser bulkParser) throws IOException {
-    Distribution distribution = HistogramDistribution.of(LINES_CLIP.of(bulkParser.allAges()), RealScalar.ONE);
+  public static void generate(File directory, String name, Tensor allAges) throws IOException {
+    Distribution distribution = HistogramDistribution.of(LINES_CLIP.of(allAges), RealScalar.ONE);
     InverseCDF inverseCDF = InverseCDF.of(distribution);
     Tensor array = Subdivide.of(0, 1.0, WIDTH - 1).map(inverseCDF::quantile).map(LINES_CLIP::rescale);
     Tensor image = Tensors.of(array).map(COLOR_DATA_GRADIENT);
@@ -79,6 +79,6 @@ public enum ImageAge {
     }
     image = ImageFormat.from(bufferedImage);
     // System.out.println(Dimensions.of(img));
-    Export.of(new File(directory, bulkParser.name() + ".png"), image);
+    Export.of(new File(directory, name + ".png"), image);
   }
 }
