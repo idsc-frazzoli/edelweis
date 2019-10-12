@@ -5,30 +5,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import ch.ethz.idsc.edelweis.mvn.JavaPredicates;
 import ch.ethz.idsc.edelweis.util.ReadLines;
 
 public class ParserText extends ParserBase {
-  private static final Predicate<String> UNFINISHED = new Predicate<String>() {
-    @Override
-    public boolean test(String string) {
-      return string.contains("TODO") //
-          || string.contains("XXX") //
-          || string.contains("LONGTERM") //
-          || string.contains("EXPERIMENTAL") //
-          || string.contains("FIXME");
-    }
-  };
-  // ---
   private List<String> todos = new ArrayList<>();
 
   public ParserText(File file) {
     super(file);
     try {
-      todos = ReadLines.of(file).stream().filter(UNFINISHED).collect(Collectors.toList());
+      todos = ReadLines.of(file).stream().filter(JavaPredicates.UNFINISHED).collect(Collectors.toList());
     } catch (Exception exception) {
       exception.printStackTrace();
     }

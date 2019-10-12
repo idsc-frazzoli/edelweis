@@ -5,9 +5,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import ch.ethz.idsc.edelweis.mvn.ProjectStructure;
+import ch.ethz.idsc.edelweis.mvn.MavenRepoStructure;
 
-/* package */ enum ProjectDatahaki implements ProjectStructure {
+/* package */ enum DatahakiProjects implements MavenRepoStructure {
   GOKART() {
     @Override
     public List<File> repos() {

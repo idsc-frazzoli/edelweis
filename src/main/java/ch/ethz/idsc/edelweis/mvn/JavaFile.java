@@ -12,6 +12,10 @@ import java.util.stream.Collectors;
 import ch.ethz.idsc.edelweis.util.ReadLines;
 
 public class JavaFile {
+  public static final Predicate<JavaFile> ALL = javaFile -> true;
+  public static final Predicate<JavaFile> MAIN = JavaFile::isMain;
+  public static final Predicate<JavaFile> TEST = javaFile -> !javaFile.isMain();
+  // ---
   private static final String PACKAGE = "package ";
   private static final String IMPORT = "import ";
   // ---

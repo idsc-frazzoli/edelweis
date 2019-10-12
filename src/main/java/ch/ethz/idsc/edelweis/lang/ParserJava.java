@@ -51,7 +51,7 @@ public class ParserJava extends ParserBase {
       exception.printStackTrace();
     }
     // final List<String> lines = ReadLines.of(file);
-    hasHeader = !lines.isEmpty() && JavaPredicates.COMMENT_PREDICATE.test(lines.get(0));
+    hasHeader = !lines.isEmpty() && JavaPredicates.DOCUMENTATION.test(lines.get(0));
     count = (int) lines.stream().filter(relevant).count();
     // if (file.getName().equals("CsvFormat.java")) {
     // lines.stream().filter(RELEVANT_JAVA).forEach(System.out::println);
@@ -114,7 +114,7 @@ public class ParserJava extends ParserBase {
 
   public Stream<String> comments() {
     try {
-      return ReadLines.of(file()).stream().filter(JavaPredicates.COMMENT_PREDICATE);
+      return ReadLines.of(file()).stream().filter(JavaPredicates.DOCUMENTATION);
     } catch (Exception exception) {
       throw new RuntimeException();
     }

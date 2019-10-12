@@ -38,7 +38,7 @@ public class TestCoverage {
     else {
       Filename filename = new Filename(file);
       if (filename.hasExtension("java")) {
-        ParserJava parserJava = new ParserJava(file, JavaPredicates.RELEVANT_CODE);
+        ParserJava parserJava = new ParserJava(file, JavaPredicates.CODE);
         if (parserJava.classType().equals(ClassType.INTERFACE)) {
           // ---
         } else {

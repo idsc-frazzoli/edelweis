@@ -4,7 +4,10 @@ package ch.ethz.idsc.demo.dh;
 import java.util.Date;
 
 import ch.ethz.idsc.edelweis.git.GitCollection;
+import ch.ethz.idsc.edelweis.mvn.JavaFile;
+import ch.ethz.idsc.edelweis.mvn.JavaPredicates;
 import ch.ethz.idsc.edelweis.mvn.MavenCrossing;
+import ch.ethz.idsc.edelweis.mvn.MavenRepoStructure;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.io.Export;
 import ch.ethz.idsc.tensor.io.HomeDirectory;
@@ -12,9 +15,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
 
 /* package */ enum RunGitCollection {
   ;
-  public static void main(String[] args) throws Exception {
-    ProjectDatahaki projectStructure = ProjectDatahaki.GOKART;
-    // ---
+  public static void run(String name, MavenRepoStructure projectStructure) throws Exception {
     try (GitCollection gitCollection = new GitCollection(projectStructure.repos())) {
       Date commonFirst = gitCollection.commonFirst();
       System.out.println(commonFirst);
@@ -30,15 +31,19 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
         tableBuilder.appendRow(Tensors.vector( //
             weeksago, //
             currentTimeMillis / 1000, //
-            mavenCrossing.fileCount(true), //
-            mavenCrossing.lineCount(true), //
-            mavenCrossing.fileCount(false), //
-            mavenCrossing.lineCount(false) //
+            mavenCrossing.fileCount(JavaFile.MAIN), //
+            mavenCrossing.lineCount(JavaFile.MAIN, JavaPredicates.CODE), //
+            mavenCrossing.fileCount(JavaFile.TEST), //
+            mavenCrossing.lineCount(JavaFile.TEST, JavaPredicates.CODE) //
         ));
         --weeksago;
         currentTimeMillis -= delta;
       }
-      Export.of(HomeDirectory.Documents(projectStructure.name() + ".csv"), tableBuilder.getTable());
+      Export.of(HomeDirectory.Documents(name + ".csv"), tableBuilder.getTable());
     }
+  }
+
+  public static void main(String[] args) throws Exception {
+    run("gokart", DatahakiProjects.GOKART);
   }
 }
