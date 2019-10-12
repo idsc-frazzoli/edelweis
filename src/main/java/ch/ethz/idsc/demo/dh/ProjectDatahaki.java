@@ -1,9 +1,11 @@
 // code by jph
-package ch.ethz.idsc.edelweis.mvn;
+package ch.ethz.idsc.demo.dh;
 
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+
+import ch.ethz.idsc.edelweis.mvn.ProjectStructure;
 
 /* package */ enum ProjectDatahaki implements ProjectStructure {
   GOKART() {

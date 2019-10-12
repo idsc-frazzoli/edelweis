@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 
 import ch.ethz.idsc.edelweis.util.ReadLines;
 
-/* package */ class JavaFile {
+public class JavaFile {
   private static final String PACKAGE = "package ";
   private static final String IMPORT = "import ";
   // ---
