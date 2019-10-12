@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis;
+package ch.ethz.idsc.edelweis.img;
 
 import java.awt.Color;
 import java.awt.Font;

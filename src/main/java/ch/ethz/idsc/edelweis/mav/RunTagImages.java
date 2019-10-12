@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import ch.ethz.idsc.edelweis.TagImage;
+import ch.ethz.idsc.edelweis.img.TagImage;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.io.HomeDirectory;

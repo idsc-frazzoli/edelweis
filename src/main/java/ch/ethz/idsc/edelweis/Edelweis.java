@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import org.jfree.chart.ChartUtils;
 import org.jfree.chart.JFreeChart;
 
+import ch.ethz.idsc.edelweis.img.ImageRedundancy;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.edelweis.lang.ParserText;
 import ch.ethz.idsc.edelweis.prc.CommentCount;
@@ -264,7 +265,7 @@ public class Edelweis {
 
   static void generateTallImages(File TAGIMAGE, Session session) {
     for (BulkParser bulkParser : session.bulkParsers()) {
-      BufferedImage bufferedImage = TagImage.of(bulkParser);
+      BufferedImage bufferedImage = StaticHelper.of(bulkParser);
       if (Objects.nonNull(bufferedImage))
         try {
           ImageIO.write(bufferedImage, "png", new File(TAGIMAGE, bulkParser.name() + ".png"));
