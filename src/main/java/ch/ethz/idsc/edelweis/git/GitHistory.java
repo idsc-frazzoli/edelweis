@@ -16,16 +16,15 @@ public class GitHistory implements AutoCloseable {
   public GitHistory(File directory) {
     git = Git.requireClean(directory);
     branch = git.branch();
-    System.out.println("branch=" + branch);
     logSha1 = git.logSha1();
   }
 
-  /** "less than or equal to the given" millis
+  /** "less than or equal to the given" date
    * 
-   * @param millis
+   * @param date
    * @return checkout status */
-  public boolean checkout(long millis) {
-    Entry<Date, String> entry = logSha1.floorEntry(new Date(millis));
+  public boolean checkout(Date date) {
+    Entry<Date, String> entry = logSha1.floorEntry(date);
     boolean success = Objects.nonNull(entry);
     if (success) {
       String sha1 = entry.getValue();
@@ -41,7 +40,6 @@ public class GitHistory implements AutoCloseable {
 
   @Override // from AutoCloseable
   public void close() throws Exception {
-    System.out.println("checkout " + branch);
     git.checkout(branch);
   }
 }

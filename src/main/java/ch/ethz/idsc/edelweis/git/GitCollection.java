@@ -18,9 +18,9 @@ public class GitCollection implements AutoCloseable {
       map.put(directory, new GitHistory(directory));
   }
 
-  public boolean checkout(long millis) {
+  public boolean checkout(Date date) {
     return map.values().stream() //
-        .allMatch(mavenGit -> mavenGit.checkout(millis));
+        .allMatch(mavenGit -> mavenGit.checkout(date));
   }
 
   @Override // from AutoCloseable
