@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import ch.ethz.idsc.edelweis.mav.JavaPredicates;
+import ch.ethz.idsc.edelweis.mvn.JavaPredicates;
 import ch.ethz.idsc.edelweis.util.Filename;
 import ch.ethz.idsc.edelweis.util.ReadLines;
 

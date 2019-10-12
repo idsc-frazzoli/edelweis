@@ -1,5 +1,5 @@
 // code by jph
-package ch.ethz.idsc.edelweis.mav;
+package ch.ethz.idsc.edelweis.mvn;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

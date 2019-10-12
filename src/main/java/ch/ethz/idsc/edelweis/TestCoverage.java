@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 
 import ch.ethz.idsc.edelweis.lang.ClassType;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
-import ch.ethz.idsc.edelweis.mav.JavaPredicates;
+import ch.ethz.idsc.edelweis.mvn.JavaPredicates;
 import ch.ethz.idsc.edelweis.util.Filename;
 
 public class TestCoverage {
