@@ -45,10 +45,15 @@ import java.util.Set;
     )));
   }
 
-  public static Set<String> getProject(String project) {
+  private static Set<String> getProject(String project) {
     Set<String> set = PERMITTED.get(project);
     return Objects.isNull(set) //
         ? Collections.emptySet()
         : Collections.unmodifiableSet(set);
+  }
+
+  public static boolean dependsOn(String project, String library) {
+    return project.equals(library) //
+        || getProject(project).contains(library);
   }
 }

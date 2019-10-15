@@ -17,7 +17,7 @@ public class ProjectWrap {
    * 
    * @param classId
    * @return */
-  public Optional<String> identify(String classId) {
+  public Optional<String> identifyProject(String classId) {
     return projects.stream() //
         .filter(project -> classId.startsWith(project + ".")) //
         .findFirst();
