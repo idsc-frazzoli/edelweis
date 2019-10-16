@@ -51,7 +51,7 @@ public class ParserJava extends ParserBase {
       exception.printStackTrace();
     }
     // final List<String> lines = ReadLines.of(file);
-    hasHeader = !lines.isEmpty() && JavaPredicates.DOCUMENTATION.test(lines.get(0));
+    hasHeader = !lines.isEmpty() && JavaPredicates.COMMENT.test(lines.get(0));
     count = (int) lines.stream().filter(relevant).count();
     // if (file.getName().equals("CsvFormat.java")) {
     // lines.stream().filter(RELEVANT_JAVA).forEach(System.out::println);

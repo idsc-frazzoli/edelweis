@@ -30,7 +30,7 @@ import ch.ethz.idsc.edelweis.util.MapComparator;
       System.out.println("=============");
       System.out.println(self);
       Map<String, Long> imports = mavenCrossing.files(self).stream() //
-          .filter(JavaFile::isMain) //
+          // .filter(JavaFile::isMain) //
           .map(JavaFile::imports) //
           .flatMap(List::stream) //
           .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));

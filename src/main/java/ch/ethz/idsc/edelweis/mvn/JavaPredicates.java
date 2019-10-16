@@ -27,6 +27,12 @@ public enum JavaPredicates {
     return string.startsWith("/** ") //
         || string.startsWith("* "); //
   };
+  public static final Predicate<String> COMMENT = _string -> {
+    final String string = _string.trim();
+    return string.startsWith("/*") //
+        || string.startsWith("* ") //
+        || string.startsWith("//"); //
+  };
   /** future tasks marked in the code as unfinished */
   public static final Predicate<String> UNFINISHED = string -> {
     return string.contains("TODO") //

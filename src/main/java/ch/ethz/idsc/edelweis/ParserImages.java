@@ -5,13 +5,13 @@ import java.util.Map;
 
 import org.jfree.chart.JFreeChart;
 
-import ch.ethz.idsc.sophus.util.plot.Histogram;
-import ch.ethz.idsc.sophus.util.plot.VisualSet;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Scalar;
 import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Range;
+import ch.ethz.idsc.tensor.fig.Histogram;
+import ch.ethz.idsc.tensor.fig.VisualSet;
 import ch.ethz.idsc.tensor.red.Max;
 import ch.ethz.idsc.tensor.red.Min;
 import ch.ethz.idsc.tensor.red.Tally;
