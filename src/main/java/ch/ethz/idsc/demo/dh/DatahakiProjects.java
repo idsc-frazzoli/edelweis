@@ -34,15 +34,19 @@ import ch.ethz.idsc.edelweis.mvn.MavenRepoStructure;
     @Override
     public List<File> repos() {
       return Arrays.asList( //
+          new File("/home/datahaki/Projects/amodeus"), //
+          new File("/home/datahaki/Projects/amodtaxi"), //
           new File("/home/datahaki/Projects/amod"), //
-          new File("/home/datahaki/Projects/amodeus"));
+          new File("/home/datahaki/Projects/amodidsc") //
+      );
     }
 
     @Override
     public List<String> projects() {
       return Arrays.asList( //
-          "amod", //
-          "ch.ethz.idsc.amodeus");
+          "ch.ethz.idsc.amodeus", //
+          "ch.ethz.idsc.amodtaxi", //
+          "amod");
     }
   }, //
   NOCTURNE() {
