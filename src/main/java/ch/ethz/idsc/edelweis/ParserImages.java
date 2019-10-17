@@ -30,7 +30,7 @@ public enum ParserImages {
     Tensor values = Tensors.empty();
     Map<Tensor, Long> map = Tally.of(ceil);
     for (Tensor _x : domain)
-      values.append(RealScalar.of(map.containsKey(_x) ? map.get(_x) : 0));
+      values.append(RealScalar.of(map.containsKey(_x) ? (long) map.get(_x) : (long) 0));
     VisualSet visualSet = new VisualSet();
     visualSet.setPlotLabel(bulkParser.name() + " line count histogram");
     visualSet.setAxesLabelX("lines");

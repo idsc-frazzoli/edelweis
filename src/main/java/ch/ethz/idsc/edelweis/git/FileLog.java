@@ -110,7 +110,7 @@ public class FileLog {
 
   public Tensor asTensor(String string, int length) {
     NavigableMap<Integer, Integer> navigableMap = edits(string);
-    return Tensors.vector(i -> RealScalar.of(navigableMap.containsKey(i) ? navigableMap.get(i) : 0), 50);
+    return Tensors.vector(i -> RealScalar.of(navigableMap.containsKey(i) ? (int) navigableMap.get(i) : (int) 0), 50);
   }
 
   public int getTotalEdits() {
