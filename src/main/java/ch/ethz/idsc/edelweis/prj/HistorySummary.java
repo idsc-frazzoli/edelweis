@@ -11,8 +11,8 @@ import org.jfree.chart.JFreeChart;
 
 import ch.ethz.idsc.edelweis.Session;
 import ch.ethz.idsc.edelweis.git.Git;
-import ch.ethz.idsc.sophus.util.plot.ListPlot;
-import ch.ethz.idsc.sophus.util.plot.VisualSet;
+import ch.ethz.idsc.tensor.fig.ListPlot;
+import ch.ethz.idsc.tensor.fig.VisualSet;
 import ch.ethz.idsc.tensor.io.UserName;
 
 enum HistorySummary {

@@ -41,7 +41,7 @@ public class Git {
     Git git = new Git(directory);
     if (git.isClean())
       return git;
-    throw new IllegalStateException("git status");
+    throw new IllegalStateException("git status: " + directory);
   }
 
   // ---

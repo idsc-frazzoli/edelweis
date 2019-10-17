@@ -42,7 +42,7 @@ public class CommonLines {
     Collections.sort(pairs, new Comparator<String>() {
       @Override
       public int compare(String o1, String o2) {
-        return -Integer.compare(result.get(o1), result.get(o2));
+        return Integer.compare(result.get(o2), result.get(o1));
       }
     });
     return pairs.stream().limit(400).map(pair -> String.format("%5d %s", result.get(pair), pair));

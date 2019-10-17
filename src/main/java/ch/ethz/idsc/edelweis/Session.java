@@ -13,11 +13,10 @@ import java.util.Properties;
 import java.util.TreeSet;
 
 import ch.ethz.idsc.tensor.io.HomeDirectory;
-import ch.ethz.idsc.tensor.io.TensorProperties;
 
 public class Session {
   private final UserProperties userProperties;
-  public final EdelweisConfig edelweisConfig;
+  // public final EdelweisConfig edelweisConfig;
   private final Map<String, BulkParser> map = new LinkedHashMap<>();
   public final String user;
   public final Properties projects;
@@ -28,7 +27,7 @@ public class Session {
   public Session(String user) {
     this.user = user;
     userProperties = new UserProperties(user);
-    edelweisConfig = TensorProperties.wrap(new EdelweisConfig()).tryLoad(userProperties.file("config"));
+    // edelweisConfig = TensorProperties.wrap(new EdelweisConfig()).tryLoad(userProperties.file("config"));
     projects = userProperties.load("projects");
     history = userProperties.load("history");
     cutoff = userProperties.load("cutoff");

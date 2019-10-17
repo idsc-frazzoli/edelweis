@@ -2,7 +2,6 @@
 package ch.ethz.idsc.edelweis.mvn;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +17,7 @@ import java.util.function.Predicate;
 public class MavenCrossing {
   private final Map<String, List<JavaFile>> map = new HashMap<>();
 
-  public MavenCrossing(List<String> projects, Collection<File> repos) throws FileNotFoundException, IOException {
+  public MavenCrossing(List<String> projects, Collection<File> repos) throws IOException {
     projects.forEach(project -> map.put(project, new LinkedList<>()));
     // ---
     for (File repo : repos) {
