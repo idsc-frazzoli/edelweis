@@ -20,7 +20,6 @@ import ch.ethz.idsc.tensor.Tensor;
 import ch.ethz.idsc.tensor.Tensors;
 import ch.ethz.idsc.tensor.alg.Reverse;
 import ch.ethz.idsc.tensor.fig.ListPlot;
-import ch.ethz.idsc.tensor.fig.StackedHistogram;
 import ch.ethz.idsc.tensor.fig.StackedTablePlot;
 import ch.ethz.idsc.tensor.fig.VisualRow;
 import ch.ethz.idsc.tensor.fig.VisualSet;
@@ -46,11 +45,6 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       jFreeChart.setBackgroundPaint(Color.WHITE);
       ChartUtils.saveChartAsPNG(new File(root, name + "_stackedTable.png"), jFreeChart, WIDTH, HEIGHT);
     }
-    {
-      JFreeChart jFreeChart = StackedHistogram.of(visualSet);
-      jFreeChart.setBackgroundPaint(Color.WHITE);
-      ChartUtils.saveChartAsPNG(new File(root, name + "_stackedHistogram.png"), jFreeChart, WIDTH, HEIGHT);
-    }
   }
 
   public static void run(String name, MavenRepoStructure projectStructure) throws Exception {
@@ -69,10 +63,11 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     try (GitCollection gitCollection = new GitCollection(projectStructure.repos())) {
       Date commonFirst = gitCollection.commonFirst();
       System.out.println("max common first: " + commonFirst);
-      long currentTimeMillis = 1570762236630L; // System.currentTimeMillis();
+      long currentTimeMillis = System.currentTimeMillis();
+      // currentTimeMillis = 1570762236630L;
       long delta = 7 * 24 * 60 * 60 * 1000;
       int weeksago = 0;
-      final int min_weeksago = -128;
+      final int min_weeksago = -28;
       TableBuilder tableBuilder = new TableBuilder();
       while (gitCollection.checkout(new Date(currentTimeMillis)) //
           && min_weeksago < weeksago) {

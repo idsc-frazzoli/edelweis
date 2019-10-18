@@ -35,7 +35,7 @@ import ch.ethz.idsc.edelweis.mvn.MavenRepoStructure;
     public List<File> repos() {
       return Arrays.asList( //
           new File("/home/datahaki/Projects/amodeus"), //
-          new File("/home/datahaki/Projects/amodtaxi"), //
+          // new File("/home/datahaki/Projects/amodtaxi"), //
           new File("/home/datahaki/Projects/amod"), //
           new File("/home/datahaki/Projects/amodidsc") //
       );
