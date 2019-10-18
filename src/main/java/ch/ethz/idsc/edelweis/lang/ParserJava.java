@@ -18,17 +18,6 @@ import ch.ethz.idsc.edelweis.util.ReadLines;
 public class ParserJava extends ParserBase {
   public static final String PACKAGE = "package ";
   public static final String IMPORT = "import ";
-  public static final Predicate<String> RELEVANT_TEX = _string -> {
-    final String string = _string.trim();
-    return !string.isEmpty() //
-        && !string.equals(";") //
-        && !string.startsWith(IMPORT) //
-        && !string.startsWith(PACKAGE) //
-        && !string.startsWith("@Override") //
-        && !string.startsWith("//") //
-        && !string.startsWith("/**") // does not apply to /* package */
-        && !string.startsWith("*");
-  };
   // ---
   private final Predicate<String> relevant;
   private final int count;
@@ -91,7 +80,7 @@ public class ParserJava extends ParserBase {
       String string = optional.get();
       identifier = string + "." + name;
     } else {
-      identifier = null;
+      identifier = "UNKNOWN." + name;
     }
     // ---
     try {
