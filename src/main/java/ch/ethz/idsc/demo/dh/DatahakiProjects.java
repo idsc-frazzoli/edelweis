@@ -48,7 +48,10 @@ import ch.ethz.idsc.edelweis.mvn.MavenRepoStructure;
           "ch.ethz.idsc.tensor", //
           "ch.ethz.idsc.amodeus", //
           "ch.ethz.idsc.amodtaxi", //
-          "amod");
+          "ch.ethz.idsc.amod", //
+          "ch.ethz.idsc.amodidsc", //
+          "ch.ethz.idsc.demo" //
+      );
     }
   }, //
   NOCTURNE() {
