@@ -16,6 +16,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class MavenCrossing {
+  /** project -> list of files */
   private final Map<String, List<JavaFile>> map = new HashMap<>();
   // private final List<JavaFile> remainder = new LinkedList<>();
 
@@ -37,6 +38,7 @@ public class MavenCrossing {
             map.get(project).add(javaFile);
           }
           // else
+          // System.err.println(javaFile.getFile());
           // remainder.add(javaFile);
         }
       }

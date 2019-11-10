@@ -29,7 +29,7 @@ public class JavaFile {
     lines = ReadLines.of(file);
   }
 
-  /** @return package name or null */
+  /** @return package name as declared in file or null */
   public String getPackage() {
     Optional<String> optional = lines.stream() //
         .map(String::trim) //

@@ -17,13 +17,10 @@ public enum ImportsLister {
 
   public static Stream<String> html(BulkParser bulkParser) {
     return bulkParser.codes().stream() //
-        .filter(pc -> pc instanceof ParserJava) //
+        .filter(parserCode -> parserCode instanceof ParserJava) //
         .map(ParserJava.class::cast) //
         .sorted(COMPARATOR) //
-        .map(parserJava -> {
-          String name = bulkParser.name(parserJava.file());
-          return String.format("%5d %s", //
-              parserJava.imports().size(), parserJava.identifier().get(), name);
-        });
+        .map(parserJava -> String.format("%5d %s", //
+            parserJava.imports().size(), parserJava.identifier().get()));
   }
 }

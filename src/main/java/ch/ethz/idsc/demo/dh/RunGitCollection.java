@@ -67,7 +67,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
       // currentTimeMillis = 1570762236630L;
       long delta = 7 * 24 * 60 * 60 * 1000;
       int weeksago = 0;
-      final int min_weeksago = -28;
+      final int min_weeksago = -280;
       TableBuilder tableBuilder = new TableBuilder();
       while (gitCollection.checkout(new Date(currentTimeMillis)) //
           && min_weeksago < weeksago) {
