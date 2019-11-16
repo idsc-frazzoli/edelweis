@@ -34,6 +34,7 @@ public enum CrossPackages {
   ;
   private static final ScalarUnaryOperator CAP = Min.function(RealScalar.of(1));
   private static final ScalarUnaryOperator SEP = Max.function(RealScalar.of(0.5));
+  private static final int MAG = 3;
 
   private static BufferedImage run(DatahakiProjects mavenRepoStructure) throws IOException {
     MavenCrossing mavenCrossing = new MavenCrossing(mavenRepoStructure.projects(), mavenRepoStructure.repos());
@@ -80,23 +81,27 @@ public enum CrossPackages {
         }
       }
     tensor = tensor.map(CAP);
-    Tensor image = ArrayPlot.of(ImageResize.nearest(tensor, 4), ColorDataGradients.CLASSIC);
+    Tensor image = ArrayPlot.of(ImageResize.nearest(tensor, MAG), ColorDataGradients.CLASSIC);
     BufferedImage bufferedImage = ImageFormat.of(image);
     {
       Graphics2D graphics = bufferedImage.createGraphics();
       GraphicsUtil.setQualityHigh(graphics);
-      graphics.setFont(new Font(Font.DIALOG, Font.BOLD, 20));
-      graphics.setColor(new Color(255, 255, 0, 192));
+      graphics.setFont(new Font(Font.DIALOG, Font.BOLD, MAG * 10));
       for (Entry<String, Integer> entry : sep.entrySet()) {
-        int pix = entry.getValue() * 4;
-        graphics.drawString(entry.getKey(), pix + 4, pix + 20);
+        int pix = entry.getValue() * MAG;
+        graphics.setColor(Color.BLACK);
+        graphics.drawString(entry.getKey(), pix + MAG + 1, pix + MAG * 10 + 1);
+        graphics.setColor(Color.WHITE);
+        graphics.drawString(entry.getKey(), pix + MAG - 1, pix + MAG * 10 - 1);
+        graphics.setColor(new Color(26, 161, 255, 192 + 16));
+        graphics.drawString(entry.getKey(), pix + MAG, pix + MAG * 10);
       }
     }
     return bufferedImage;
   }
 
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    DatahakiProjects datahakiProjects = DatahakiProjects.GOKART;
+    DatahakiProjects datahakiProjects = DatahakiProjects.ALL;
     BufferedImage bufferedImage = run(datahakiProjects);
     ImageIO.write(bufferedImage, "png", HomeDirectory.Pictures(datahakiProjects.name() + ".png"));
   }
