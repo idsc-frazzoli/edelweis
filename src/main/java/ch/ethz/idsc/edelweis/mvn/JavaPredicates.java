@@ -41,4 +41,15 @@ public enum JavaPredicates {
         || string.contains("EXPERIMENTAL") //
         || string.contains("FIXME");
   };
+  public static final Predicate<String> RELEVANT_TEX = _string -> {
+    final String string = _string.trim();
+    return !string.isEmpty() //
+        && !string.equals(";") //
+        && !string.startsWith(ParserJava.IMPORT) //
+        && !string.startsWith(ParserJava.PACKAGE) //
+        && !string.startsWith("@Override") //
+        && !string.startsWith("//") //
+        && !string.startsWith("/**") // does not apply to /* package */
+        && !string.startsWith("*");
+  };
 }

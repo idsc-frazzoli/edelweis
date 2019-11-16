@@ -20,7 +20,7 @@ import ch.ethz.idsc.tensor.io.HomeDirectory;
 /* package */ enum RunTagImages {
   ;
   public static void main(String[] args) throws FileNotFoundException, IOException {
-    MavenRepoStructure projectStructure = DatahakiProjects.GOKART;
+    MavenRepoStructure projectStructure = DatahakiProjects.AMODEUS;
     projectStructure.repos().forEach(RepoStatus::print);
     MavenCrossing mavenCrossing = new MavenCrossing(projectStructure.projects(), projectStructure.repos());
     for (String project : projectStructure.projects()) {

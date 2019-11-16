@@ -24,6 +24,16 @@ import java.util.stream.Stream;
     return mavenPackageIndex;
   }
 
+  /** @param file for instance "/home/datahaki/Projects/retina"
+   * @return
+   * @throws FileNotFoundException
+   * @throws IOException */
+  public static MavenPackageIndex main(File file) throws FileNotFoundException, IOException {
+    MavenPackageIndex mavenPackageIndex = new MavenPackageIndex();
+    mavenPackageIndex.visit(new File(file, "src/main"), true);
+    return mavenPackageIndex;
+  }
+
   // ---
   private final List<JavaFile> javaFiles = new LinkedList<>();
 

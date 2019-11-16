@@ -13,9 +13,12 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class MavenCrossing {
+  /** project -> list of files */
   private final Map<String, List<JavaFile>> map = new HashMap<>();
+  // private final List<JavaFile> remainder = new LinkedList<>();
 
   public MavenCrossing(List<String> projects, Collection<File> repos) throws IOException {
     projects.forEach(project -> map.put(project, new LinkedList<>()));
@@ -34,19 +37,27 @@ public class MavenCrossing {
             String project = optional.get();
             map.get(project).add(javaFile);
           }
+          // else
+          // System.err.println(javaFile.getFile());
+          // remainder.add(javaFile);
         }
       }
     }
   }
 
+  private Stream<List<JavaFile>> streamAll() {
+    // return Stream.concat(map.values().stream(), Stream.of(remainder));
+    return map.values().stream();
+  }
+
   /** @return total file count of all projects */
   public int fileCount() {
-    return map.values().stream().mapToInt(List::size).sum();
+    return streamAll().mapToInt(List::size).sum();
   }
 
   /** @return total file count of all projects */
   public int fileCount(Predicate<JavaFile> predicate) {
-    return (int) map.values().stream() //
+    return (int) streamAll() //
         .flatMap(List::stream) //
         .filter(predicate) //
         .count();
@@ -54,7 +65,7 @@ public class MavenCrossing {
 
   /** @return total line count of all projects */
   public int lineCount() {
-    return map.values().stream() //
+    return streamAll() //
         .flatMap(List::stream) //
         .mapToInt(javaFile -> javaFile.count(JavaPredicates.CODE)) //
         .sum();
@@ -62,7 +73,7 @@ public class MavenCrossing {
 
   /** @return total line count of all projects */
   public int lineCount(Predicate<JavaFile> predicate, Predicate<String> linePredicate) {
-    return map.values().stream() //
+    return streamAll() //
         .flatMap(List::stream) //
         .filter(predicate) //
         .mapToInt(javaFile -> javaFile.count(linePredicate)) //
