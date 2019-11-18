@@ -39,7 +39,6 @@ public class Edelweis {
   // TODO find tabs in text files
   // TODO find non-unix line endings
   public static void main(String[] args) {
-    args = new String[] { "datahaki" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = session.exportFolder();
     session.build();
