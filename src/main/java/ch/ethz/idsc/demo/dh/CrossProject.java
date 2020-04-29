@@ -65,8 +65,7 @@ import ch.ethz.idsc.edelweis.util.MapComparator;
       // System.out.println(map2);
       for (String project : mavenRepoStructure.projects()) {
         long count = map2.containsKey(project) //
-            ? map2.get(project)
-            : 0;
+            ? map2.get(project) : 0;
         if (0 < count) { //
           String name = project.substring(project.lastIndexOf('.') + 1);
           String format = String.format("%7s %d", name, count);

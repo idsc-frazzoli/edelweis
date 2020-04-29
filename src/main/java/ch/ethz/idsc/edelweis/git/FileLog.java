@@ -102,8 +102,7 @@ public class FileLog {
     for (Scalar millis : edits) {
       int floor = scalarUnaryOperator.apply(millis).map(Floor.FUNCTION).Get().number().intValue();
       navigableMap.put(floor, navigableMap.containsKey(floor) //
-          ? navigableMap.get(floor) + 1
-          : 1);
+          ? navigableMap.get(floor) + 1 : 1);
     }
     return navigableMap;
   }
@@ -119,8 +118,7 @@ public class FileLog {
 
   public int getCommitsBy(String author) {
     return committer.containsKey(author) //
-        ? committer.get(author)
-        : 0;
+        ? committer.get(author) : 0;
   }
 
   public static void main(String[] args) {
