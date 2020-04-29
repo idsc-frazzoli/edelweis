@@ -2,6 +2,7 @@
 package ch.ethz.idsc.edelweis.prc;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 import ch.ethz.idsc.edelweis.BulkParser;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
 
+/** This class is responsible to evalue the {@link BulkParser}
+ * and create the information used in the tab "Dependencies" in the report. */
 public class ExtDependencies {
   public static boolean isRelevant(String string) {
     return !string.startsWith("java.") //
@@ -34,5 +37,15 @@ public class ExtDependencies {
 
   public Map<String, Long> getAll() {
     return Collections.unmodifiableMap(collect);
+  }
+
+  /** @return {@link Map} with class names and number of detected dependencies
+   * sorted with the highest number first. */
+  public Map<String, Long> getAllFrequencySorted() {
+    LinkedHashMap<String, Long> sorted = new LinkedHashMap<>();
+    collect.entrySet().stream()//
+        .sorted(FrequencySorter.INSTANCE)//
+        .forEach(e -> sorted.put(e.getKey(), e.getValue()));
+    return sorted;
   }
 }

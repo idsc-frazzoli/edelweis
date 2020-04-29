@@ -15,6 +15,10 @@ import ch.ethz.idsc.edelweis.lang.ParserJava;
 import ch.ethz.idsc.tensor.RealScalar;
 import ch.ethz.idsc.tensor.Tensor;
 
+/** This class is responsible for counting dependencies of classes.
+ * The results are used in the "Unused" pages of the report.
+ * The "Dependencies" pages of the report are built with the class {@link ExtDependencies}
+ * @author clruch */
 public class DependencyGlobal {
   /** import count */
   private final Map<String, Integer> dependency = new HashMap<>();
@@ -44,6 +48,8 @@ public class DependencyGlobal {
         .forEach(_import -> dependency.put(_import, dependency.get(_import) + 1));
   }
 
+  /** @return {@link Stream} of unreferenced repositories
+   * from {@link BulkParser} @param bulkParser */
   public Stream<String> publicUnref(BulkParser bulkParser) {
     return bulkParser.codes().stream() //
         .filter(ParserJava.class::isInstance) //
