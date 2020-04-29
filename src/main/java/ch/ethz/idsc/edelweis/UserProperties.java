@@ -28,7 +28,7 @@ class UserProperties {
     try {
       return Import.properties(file);
     } catch (Exception exception) {
-      System.err.println("not found: " + file);
+      System.err.println("not found: " + file.getAbsolutePath());
     }
     return new Properties();
   }

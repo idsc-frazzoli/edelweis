@@ -39,6 +39,8 @@ public class Edelweis {
   // TODO list duplicates in central page (not per project)
   // TODO find tabs in text files
   // TODO find non-unix line endings
+  // FIXME proper documentation of the required input files and what the
+  // lines in them mean.
   public static void main(String[] args) {
     // args = new String[] { "datahaki" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
