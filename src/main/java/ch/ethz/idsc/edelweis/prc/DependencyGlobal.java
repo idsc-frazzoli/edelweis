@@ -54,7 +54,8 @@ public class DependencyGlobal {
     return bulkParser.codes().stream() //
         .filter(ParserJava.class::isInstance) //
         .map(ParserJava.class::cast) //
-        .filter(ParserJava::isPublic) //
+        .filter(ParserJava::isPublic) // the class is public
+        .filter(c -> !c.isJunitTest()) // org.junit.Test must have one public class
         .map(ParserJava::identifier) //
         .filter(Optional::isPresent) //
         .map(Optional::get) //

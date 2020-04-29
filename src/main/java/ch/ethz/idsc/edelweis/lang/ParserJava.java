@@ -39,6 +39,7 @@ public class ParserJava extends ParserBase {
   private final boolean isPublic;
   private final boolean isAbstract;
   private final boolean hasHeader;
+  private final boolean isJunitTest;
 
   public ParserJava(File file, Predicate<String> relevant) {
     super(file);
@@ -81,6 +82,17 @@ public class ParserJava extends ParserBase {
         isPublic = true;
         isAbstract = false;
       }
+    }
+    {// see if it is a org.junit.Test
+      boolean containsJUnitImport = false;
+      boolean containsJUnitTest = false;
+      for (String line : lines) {
+        if (line.contains("import org.junit.Test;"))
+          containsJUnitImport = true;
+        if (line.contains("@Test"))
+          containsJUnitTest = true;
+      }
+      isJunitTest = containsJUnitImport && containsJUnitTest;
     }
     // build identifier, for instance ch.ethz.idsc.subare.core.DiscountFunction
     Optional<String> optional = lines.stream() //
@@ -141,6 +153,10 @@ public class ParserJava extends ParserBase {
 
   public boolean isPublic() {
     return isPublic;
+  }
+
+  public boolean isJunitTest() {
+    return isJunitTest;
   }
 
   public boolean isAbstract() {
