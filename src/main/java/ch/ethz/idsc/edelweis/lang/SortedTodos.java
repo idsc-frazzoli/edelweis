@@ -3,7 +3,6 @@ package ch.ethz.idsc.edelweis.lang;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Random;
 
 /* package */ enum SortedTodos {
   ;
@@ -22,7 +21,8 @@ import java.util.Random;
     return sortedTodos;
   }
 
-  static String getDeveloper(String todoLine) {
+  static String getDeveloper(String todoLineIn) {
+    String todoLine = preConditionLine(todoLineIn);
     // no '@' --> no developer
     if (!todoLine.contains("@"))
       return UNKNOWN_IDENT;
@@ -36,5 +36,16 @@ import java.util.Random;
     String restOfLine = todoLine.substring(identPos, todoLine.length());
     String developer = restOfLine.split(" ")[0];
     return developer;
+  }
+
+  private static String preConditionLine(String todoLineIn) {
+    String todoLine = todoLineIn.replace("{@link", "_");    
+    todoLine = todoLine.replace("@Deprecated", "_");    
+    // remove anything before the Todo identifier
+    if (todoLine.contains("TODO"))
+      return todoLine.substring(todoLine.indexOf("TODO") + 4, todoLine.length());
+    if (todoLine.contains("FIXME"))
+      return todoLine.substring(todoLine.indexOf("FIXME") + 4, todoLine.length());
+    return todoLine;
   }
 }

@@ -15,8 +15,12 @@ enum ExtensionsHelper {
   static {
     try {
       Properties properties = Import.properties(new File("get", "ignore_extensions.properties"));
-      for (String ext : properties.stringPropertyNames())
+      for (String ext : properties.stringPropertyNames()) 
         SET.add(ext);
+      System.out.println("ignored extensions: ");
+      SET.stream().forEach(s->{
+        System.out.println(s);
+      });
     } catch (IOException exception) {
       exception.printStackTrace();
     }

@@ -224,7 +224,7 @@ public class Edelweis {
             // the todos are listed sorted according to a category
             Map<String, Map<String, String>> sortedTodos = bulkParser.sortedTodos();
             for (String category : sortedTodos.keySet()) {
-              htmlUtf8.append("<b>" + "Category:" + category + "</b>\n");
+              htmlUtf8.append("<b>" + "Category: " + category + "</b>\n");
               Map<String, String> todos = sortedTodos.get(category);
               for (Entry<String, String> todo : todos.entrySet()) {
                 // the file
