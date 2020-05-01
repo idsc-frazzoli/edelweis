@@ -1,10 +1,11 @@
-// code by jph
+// code by jph and clruch
 package ch.ethz.idsc.edelweis;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -134,14 +135,14 @@ public class BulkParser {
   }
   
   
-  public Map<String,List<String>> sortedTodos(){
-    Map<String,List<String>> sortedTodos = new HashMap<>();
+  public Map<String,Map<String,String>> sortedTodos(){
+    Map<String,Map<String,String>> sortedTodos = new HashMap<>();
     for(ParserText parserText : texts) {
       for(String cateogry : parserText.sortedTodos().keySet()) {
         if(!sortedTodos.containsKey(cateogry)) 
-          sortedTodos.put(cateogry, new ArrayList<>());
-        parserText.sortedTodos().get(cateogry).stream().forEach(s->{
-          sortedTodos.get(cateogry).add(s);          
+          sortedTodos.put(cateogry, new LinkedHashMap<>());
+        parserText.sortedTodos().get(cateogry).entrySet().stream().forEach(s->{
+          sortedTodos.get(cateogry).put(s.getKey(),s.getValue());          
         });          
       }
     }

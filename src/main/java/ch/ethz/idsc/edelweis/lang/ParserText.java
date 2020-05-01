@@ -1,4 +1,4 @@
-// code by jph
+// code by jph and clruch
 package ch.ethz.idsc.edelweis.lang;
 
 import java.io.File;
@@ -15,13 +15,13 @@ import ch.ethz.idsc.edelweis.util.ReadLines;
 
 public class ParserText extends ParserBase {
   private List<String> todos = new ArrayList<>();
-  private Map<String, List<String>> sortedTodos = new HashMap<>();
+  private Map<String, Map<String,String>> sortedTodos = new HashMap<>();
 
   public ParserText(File file) {
     super(file);
     try {
       todos = ReadLines.of(file).stream().filter(JavaPredicates.UNFINISHED).collect(Collectors.toList());
-      sortedTodos = SortedTodos.of(todos);
+      sortedTodos = SortedTodos.of(this);
     } catch (Exception exception) {
       exception.printStackTrace();
     }
@@ -41,7 +41,7 @@ public class ParserText extends ParserBase {
         .map(String::trim);
   }
 
-  public Map<String, List<String>> sortedTodos() {
+  public Map<String, Map<String,String>> sortedTodos() {
     return Collections.unmodifiableMap(sortedTodos);
   }
   // -- deprecated old functions below... --------------------------------------------------------
