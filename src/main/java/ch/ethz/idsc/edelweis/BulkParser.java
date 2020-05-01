@@ -133,22 +133,22 @@ public class BulkParser {
   public List<ParserText> texts() {
     return Collections.unmodifiableList(texts);
   }
-  
-  
-  public Map<String,Map<String,String>> sortedTodos(){
-    Map<String,Map<String,String>> sortedTodos = new HashMap<>();
-    for(ParserText parserText : texts) {
-      for(String cateogry : parserText.sortedTodos().keySet()) {
-        if(!sortedTodos.containsKey(cateogry)) 
+
+  /** @return {@link Map} containing all todos sorted with their category, currenlty
+   * the category is the assigned developer, see {@link SortedTodos} for the implementation. */
+  public Map<String, Map<String, String>> sortedTodos() {
+    Map<String, Map<String, String>> sortedTodos = new HashMap<>();
+    for (ParserText parserText : texts) {
+      for (String cateogry : parserText.sortedTodos().keySet()) {
+        if (!sortedTodos.containsKey(cateogry))
           sortedTodos.put(cateogry, new LinkedHashMap<>());
-        parserText.sortedTodos().get(cateogry).entrySet().stream().forEach(s->{
-          sortedTodos.get(cateogry).put(s.getKey(),s.getValue());          
-        });          
+        parserText.sortedTodos().get(cateogry).entrySet().stream().forEach(s -> {
+          sortedTodos.get(cateogry).put(s.getKey(), s.getValue());
+        });
       }
     }
     return sortedTodos;
   }
-  
 
   public Tensor allLineCounts() {
     return Tensor.of(codes.stream() //
