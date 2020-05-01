@@ -128,7 +128,8 @@ public class Edelweis {
               submenu.appendln("<tr><td><a href='testsync.htm' target='content'>Test-Sync</a> " + smallgray(syncTestFail.size()));
             // ---
             {
-              long count = bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count();
+              /** if any of the assesed files contains {@link JavaPredicates.UNFINISHED}, append a submenu. */
+              long count = bulkParser.texts().stream().flatMap(parserText -> parserText.todoLines().stream()).count();
               if (0 < count)
                 submenu.appendln("<tr><td><a href='todos.htm' target='content'>Todos</a> " + smallgray(count));
             }
@@ -221,7 +222,7 @@ public class Edelweis {
             htmlUtf8.append("<h3>Todos</h3>\n");
             htmlUtf8.append("<pre>\n");
             for (ParserText parserText : bulkParser.texts())
-              if (!parserText.todos().isEmpty()) {
+              if (!parserText.todoLines().isEmpty()) { /** there are {@link JavaPredicates.UNFINISHED} annotations */ 
                 htmlUtf8.append("<b>" + parserText.file() + "</b>\n");
                 parserText.todosNoXml().forEach(htmlUtf8::appendln);
                 htmlUtf8.appendln();

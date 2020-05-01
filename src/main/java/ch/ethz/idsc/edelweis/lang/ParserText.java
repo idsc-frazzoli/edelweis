@@ -28,7 +28,7 @@ public class ParserText extends ParserBase {
     throw new RuntimeException();
   }
 
-  public List<String> todos() {
+  public List<String> todoLines() {
     return Collections.unmodifiableList(todos);
   }
 

@@ -113,7 +113,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     TableBuilder tableBuilder = new TableBuilder();
     for (Entry<Integer, BulkParser> entry : bulkParsers.entrySet()) {
       BulkParser bulkParser = entry.getValue();
-      int todos = (int) bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count();
+      int todos = (int) bulkParser.texts().stream().flatMap(parserText -> parserText.todoLines().stream()).count();
       tableBuilder.appendRow(Tensors.vector(entry.getKey(), todos));
     }
     return tableBuilder.getTable();

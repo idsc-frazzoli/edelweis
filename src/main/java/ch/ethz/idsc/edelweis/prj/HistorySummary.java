@@ -15,6 +15,7 @@ import ch.ethz.idsc.tensor.fig.ListPlot;
 import ch.ethz.idsc.tensor.fig.VisualSet;
 import ch.ethz.idsc.tensor.io.UserName;
 
+// TODO document what is this?
 enum HistorySummary {
   ;
   // private static final Dimension _16_9_1024 = new Dimension(1024, 576);
@@ -42,7 +43,7 @@ enum HistorySummary {
       lines.add(projectHistory.lineCount()).setLabel(project);
       files.add(projectHistory.fileCount()).setLabel(project);
       ratio.add(projectHistory.ratios()).setLabel(project);
-      todos.add(projectHistory.todos()).setLabel(project);
+//      todos.add(projectHistory.todos()).setLabel(project);
     }
     // ---
     Dimension dimension = _16_9_1280;
