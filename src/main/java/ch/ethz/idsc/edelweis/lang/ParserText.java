@@ -15,7 +15,7 @@ import ch.ethz.idsc.edelweis.util.ReadLines;
 
 public class ParserText extends ParserBase {
   private List<String> todos = new ArrayList<>();
-  private Map<String, Map<String,String>> sortedTodos = new HashMap<>();
+  private Map<String, Map<String, String>> sortedTodos = new HashMap<>();
 
   public ParserText(File file) {
     super(file);
@@ -41,7 +41,7 @@ public class ParserText extends ParserBase {
         .map(String::trim);
   }
 
-  public Map<String, Map<String,String>> sortedTodos() {
+  public Map<String, Map<String, String>> sortedTodos() {
     return Collections.unmodifiableMap(sortedTodos);
   }
   // -- deprecated old functions below... --------------------------------------------------------

@@ -1,3 +1,4 @@
+// code by clruch
 package ch.ethz.idsc.edelweis.lang;
 
 import java.util.HashMap;
@@ -21,6 +22,9 @@ import java.util.Map;
     return sortedTodos;
   }
 
+  /** @return name of the developer assigned to solve the issue mentioned
+   * in the {@link String} @param todoLineIn, the convention is that it is the first
+   * word after the '@' sign placed after the TODO or FIXME identifier. */
   static String getDeveloper(String todoLineIn) {
     String todoLine = preConditionLine(todoLineIn);
     // no '@' --> no developer
@@ -39,8 +43,8 @@ import java.util.Map;
   }
 
   private static String preConditionLine(String todoLineIn) {
-    String todoLine = todoLineIn.replace("{@link", "_");    
-    todoLine = todoLine.replace("@Deprecated", "_");    
+    String todoLine = todoLineIn.replace("{@link", "_");
+    todoLine = todoLine.replace("@Deprecated", "_");
     // remove anything before the Todo identifier
     if (todoLine.contains("TODO"))
       return todoLine.substring(todoLine.indexOf("TODO") + 4, todoLine.length());
