@@ -43,7 +43,7 @@ enum HistorySummary {
       lines.add(projectHistory.lineCount()).setLabel(project);
       files.add(projectHistory.fileCount()).setLabel(project);
       ratio.add(projectHistory.ratios()).setLabel(project);
-//      todos.add(projectHistory.todos()).setLabel(project);
+      todos.add(projectHistory.todos()).setLabel(project);
     }
     // ---
     Dimension dimension = _16_9_1280;
