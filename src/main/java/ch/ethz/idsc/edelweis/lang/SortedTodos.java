@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/** This class is used to sort TODOs and FIXMEs according to the developer that
+ * is assigned to resolve them.
+ * @author clruch */
 /* package */ enum SortedTodos {
   ;
   // private static final Random random = new Random();
@@ -24,7 +27,7 @@ import java.util.Map;
 
   /** @return name of the developer assigned to solve the issue mentioned
    * in the {@link String} @param todoLineIn, the convention is that it is the first
-   * word after the '@' sign placed after the TODO or FIXME identifier. */
+   * word after the '@' sign placed after the TODOs or FIXMEs identifier. */
   static String getDeveloper(String todoLineIn) {
     String todoLine = preConditionLine(todoLineIn);
     // no '@' --> no developer

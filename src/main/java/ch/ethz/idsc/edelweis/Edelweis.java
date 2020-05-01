@@ -2,7 +2,7 @@
 package ch.ethz.idsc.edelweis;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.File;  
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
