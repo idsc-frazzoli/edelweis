@@ -22,7 +22,8 @@ enum HistorySummary {
   private static final Dimension _16_9_1280 = new Dimension(1280, 720);
 
   public static void main(String[] args) throws IOException {
-    args = new String[] { "test" };
+    if (args.length == 0)
+      args = new String[] { "test" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = new File(session.exportFolder(), "history");
     export.mkdir();

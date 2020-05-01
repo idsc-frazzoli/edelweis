@@ -224,7 +224,7 @@ public class Edelweis {
             for (ParserText parserText : bulkParser.texts())
               if (!parserText.todoLines().isEmpty()) { /** there are {@link JavaPredicates.UNFINISHED} annotations */ 
                 htmlUtf8.append("<b>" + parserText.file() + "</b>\n");
-                parserText.todosNoXml().forEach(htmlUtf8::appendln);
+                parserText.todosPrint().forEach(htmlUtf8::appendln);
                 htmlUtf8.appendln();
               }
             htmlUtf8.append("</pre>\n");

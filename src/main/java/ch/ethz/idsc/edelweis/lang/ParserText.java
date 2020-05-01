@@ -32,13 +32,33 @@ public class ParserText extends ParserBase {
     return Collections.unmodifiableList(todos);
   }
 
+  public Stream<String> todosPrint() {
+    return todos.stream() //
+        .map(String::trim);
+  }
+  // -- deprecated old functions below... --------------------------------------------------------
+
+  @Deprecated // clruch checked if this is used often and found few instances that
+  // did not make a lot of sense, e.g., people using --> to indicate something was
+  // removed, so clruch temporarily removed usage of this function.
+  // TODO @datahaki confirm and delete or change back, todosNoXml was only used
+  // in Edelweis line 227 once.
   public Stream<String> todosNoXml() {
     return todos.stream() //
         .map(String::trim) //
         .map(ParserText::removeXml);
   }
 
-  static String removeXml(String string) {
+  @Deprecated // see comment above
+  private static String removeXml(String string) {
+    String before = string;
+    String after = string.replace("<!--", "").replace("-->", "");
+    if (!before.equals(after)) {
+      System.out.println("before: ");
+      System.out.println(before);
+      System.out.println("after: ");
+      System.out.println(after);
+    }
     return string.replace("<!--", "").replace("-->", "");
   }
 }
