@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -36,6 +37,12 @@ public class ParserText extends ParserBase {
     return todos.stream() //
         .map(String::trim);
   }
+  
+  public Map<String,List<String>> sortedTodos(){
+    return SortedTodos.of(todos);    
+  }
+  
+  
   // -- deprecated old functions below... --------------------------------------------------------
 
   @Deprecated // clruch checked if this is used often and found few instances that
