@@ -28,11 +28,13 @@ public enum TagImage {
 
   public static BufferedImage of(String name, Tensor allLineCounts) {
     String icon = name.endsWith("-test") //
-        ? name.substring(0, name.length() - 5) : name;
+        ? name.substring(0, name.length() - 5)
+        : name;
     File file = new File(GET_ICONS, icon + ".png");
     try {
       BufferedImage iconImage = file.isFile() //
-          ? ImageIO.read(file) : new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
+          ? ImageIO.read(file)
+          : new BufferedImage(64, 64, BufferedImage.TYPE_INT_ARGB);
       Properties properties = Import.properties(new File("get", "descriptions.properties"));
       BufferedImage bufferedImage = //
           new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);

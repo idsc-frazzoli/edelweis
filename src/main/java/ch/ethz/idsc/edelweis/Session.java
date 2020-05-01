@@ -41,7 +41,8 @@ public class Session {
 
   public String cutoff(String project) {
     return cutoff.containsKey(project) //
-        ? cutoff.getProperty(project) : "";
+        ? cutoff.getProperty(project)
+        : "";
   }
 
   public Collection<BulkParser> bulkParsers() {

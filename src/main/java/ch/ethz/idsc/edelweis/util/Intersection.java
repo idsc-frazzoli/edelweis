@@ -14,6 +14,7 @@ public enum Intersection {
    * @return */
   public static <T> Set<T> of(Collection<T> a, Collection<T> b) {
     return (a.size() < b.size() //
-        ? a.stream().filter(b::contains) : b.stream().filter(a::contains)).collect(Collectors.toSet());
+        ? a.stream().filter(b::contains)
+        : b.stream().filter(a::contains)).collect(Collectors.toSet());
   }
 }

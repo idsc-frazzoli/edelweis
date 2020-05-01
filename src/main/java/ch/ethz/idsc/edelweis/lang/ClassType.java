@@ -10,6 +10,7 @@ public enum ClassType {
   ENUM, //
   UNKNOWN, //
   ;
+
   // ---
   private final String lowercaseId = name().toLowerCase() + " ";
 
