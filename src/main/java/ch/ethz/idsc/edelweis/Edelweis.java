@@ -39,8 +39,10 @@ public class Edelweis {
   // TODO list duplicates in central page (not per project)
   // TODO find tabs in text files
   // TODO find non-unix line endings
+  // FIXME proper documentation of the required input files and what the
+  // lines in them mean.
   public static void main(String[] args) {
-    args = new String[] { "datahaki" };
+    // args = new String[] { "datahaki" };
     Session session = new Session(0 < args.length ? args[0] : UserName.get());
     final File export = session.exportFolder();
     session.build();
@@ -234,7 +236,7 @@ public class Edelweis {
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "dependencies.htm"))) {
             ExtDependencies extDependencies = new ExtDependencies(bulkParser);
-            Map<String, Long> set = extDependencies.getAll();
+            Map<String, Long> set = extDependencies.getAllFrequencySorted();
             htmlUtf8.append("<h3>Dependencies</h3>\n");
             htmlUtf8.append("<pre>\n");
             set.entrySet().forEach(entry -> htmlUtf8.appendln(String.format("%5d %s", entry.getValue(), entry.getKey())));

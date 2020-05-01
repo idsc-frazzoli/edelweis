@@ -8,6 +8,7 @@ import ch.ethz.idsc.edelweis.lang.ParserJava;
 
 /* package */ enum EntrySort implements Comparator<Entry<ParserJava, Integer>> {
   INSTANCE;
+
   // ---
   @Override
   public int compare(Entry<ParserJava, Integer> entry1, Entry<ParserJava, Integer> entry2) {
