@@ -4,6 +4,7 @@ package ch.ethz.idsc.edelweis.lang;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,11 +15,13 @@ import ch.ethz.idsc.edelweis.util.ReadLines;
 
 public class ParserText extends ParserBase {
   private List<String> todos = new ArrayList<>();
+  private Map<String, List<String>> sortedTodos = new HashMap<>();
 
   public ParserText(File file) {
     super(file);
     try {
       todos = ReadLines.of(file).stream().filter(JavaPredicates.UNFINISHED).collect(Collectors.toList());
+      sortedTodos = SortedTodos.of(todos);
     } catch (Exception exception) {
       exception.printStackTrace();
     }
@@ -37,12 +40,10 @@ public class ParserText extends ParserBase {
     return todos.stream() //
         .map(String::trim);
   }
-  
-  public Map<String,List<String>> sortedTodos(){
-    return SortedTodos.of(todos);    
+
+  public Map<String, List<String>> sortedTodos() {
+    return Collections.unmodifiableMap(sortedTodos);
   }
-  
-  
   // -- deprecated old functions below... --------------------------------------------------------
 
   @Deprecated // clruch checked if this is used often and found few instances that

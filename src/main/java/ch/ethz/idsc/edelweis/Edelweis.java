@@ -221,14 +221,27 @@ public class Edelweis {
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "todos.htm"))) {
             htmlUtf8.append("<h3>Todos</h3>\n");
             htmlUtf8.append("<pre>\n");
-            for (ParserText parserText : bulkParser.texts()) {
-              /** there are {@link JavaPredicates.UNFINISHED} annotations */
-              if (!parserText.todoLines().isEmpty()) {
-                htmlUtf8.append("<b>" + parserText.file() + "</b>\n");
-                parserText.todosPrint().forEach(htmlUtf8::appendln);
-                htmlUtf8.appendln();
+            // OLD VERSION
+            // for (ParserText parserText : bulkParser.texts()) {
+            // /** there are {@link JavaPredicates.UNFINISHED} annotations */
+            // if (!parserText.todoLines().isEmpty()) {
+            // htmlUtf8.append("<b>" + parserText.file() + "</b>\n");
+            // parserText.todosPrint().forEach(htmlUtf8::appendln);
+            // htmlUtf8.appendln();
+            // }
+            // }
+            // --
+            // NEW VERSION
+            Map<String, List<String>> sortedTodos = bulkParser.sortedTodos();
+            for (String category : sortedTodos.keySet()) {
+              htmlUtf8.append("<b>" + category + "</b>\n");
+              for (String todo : sortedTodos.get(category)) {
+                htmlUtf8.appendln(todo);
               }
+              htmlUtf8.appendln();
+              htmlUtf8.appendln();
             }
+            // --
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "edits.htm"))) {
