@@ -1,9 +1,11 @@
-// code by jph
+// code by jph and clruch
 package ch.ethz.idsc.edelweis;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -130,6 +132,22 @@ public class BulkParser {
 
   public List<ParserText> texts() {
     return Collections.unmodifiableList(texts);
+  }
+
+  /** @return {@link Map} containing all todos sorted with their category, currenlty
+   * the category is the assigned developer, see {@link SortedTodos} for the implementation. */
+  public Map<String, Map<String, String>> sortedTodos() {
+    Map<String, Map<String, String>> sortedTodos = new HashMap<>();
+    for (ParserText parserText : texts) {
+      for (String cateogry : parserText.sortedTodos().keySet()) {
+        if (!sortedTodos.containsKey(cateogry))
+          sortedTodos.put(cateogry, new LinkedHashMap<>());
+        parserText.sortedTodos().get(cateogry).entrySet().stream().forEach(s -> {
+          sortedTodos.get(cateogry).put(s.getKey(), s.getValue());
+        });
+      }
+    }
+    return sortedTodos;
   }
 
   public Tensor allLineCounts() {

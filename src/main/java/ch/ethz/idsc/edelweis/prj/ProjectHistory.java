@@ -41,9 +41,9 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     System.out.println("currentBranch=" + currentBranch);
     // FIXME big time
     // for (String line : git.logSha1().subMap(fromKey, toKey)) {
-    //// StringTokenizer stringTokenizer = new StringTokenizer(line);
-    //// String date = stringTokenizer.nextToken();
-    //// String sha1 = stringTokenizer.nextToken();
+    // // StringTokenizer stringTokenizer = new StringTokenizer(line);
+    // // String date = stringTokenizer.nextToken();
+    // // String sha1 = stringTokenizer.nextToken();
     // if (cutoff.compareTo(date) < 0)
     // try {
     // int days = (int) TimeUnit.DAYS.convert( //
@@ -113,7 +113,7 @@ import ch.ethz.idsc.tensor.io.TableBuilder;
     TableBuilder tableBuilder = new TableBuilder();
     for (Entry<Integer, BulkParser> entry : bulkParsers.entrySet()) {
       BulkParser bulkParser = entry.getValue();
-      int todos = (int) bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count();
+      int todos = (int) bulkParser.texts().stream().flatMap(parserText -> parserText.todoLines().stream()).count();
       tableBuilder.appendRow(Tensors.vector(entry.getKey(), todos));
     }
     return tableBuilder.getTable();

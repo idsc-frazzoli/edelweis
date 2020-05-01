@@ -1,11 +1,12 @@
-// code by jph
+// code by jph and clruch
 package ch.ethz.idsc.edelweis;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
+import java.io.File;  
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,7 +19,6 @@ import org.jfree.chart.JFreeChart;
 
 import ch.ethz.idsc.edelweis.img.ImageRedundancy;
 import ch.ethz.idsc.edelweis.lang.ParserJava;
-import ch.ethz.idsc.edelweis.lang.ParserText;
 import ch.ethz.idsc.edelweis.prc.CommentCount;
 import ch.ethz.idsc.edelweis.prc.CommonLines;
 import ch.ethz.idsc.edelweis.prc.DependencyGlobal;
@@ -128,7 +128,8 @@ public class Edelweis {
               submenu.appendln("<tr><td><a href='testsync.htm' target='content'>Test-Sync</a> " + smallgray(syncTestFail.size()));
             // ---
             {
-              long count = bulkParser.texts().stream().flatMap(parserText -> parserText.todos().stream()).count();
+              /** if any of the assesed files contains {@link JavaPredicates.UNFINISHED}, append a submenu. */
+              long count = bulkParser.texts().stream().flatMap(parserText -> parserText.todoLines().stream()).count();
               if (0 < count)
                 submenu.appendln("<tr><td><a href='todos.htm' target='content'>Todos</a> " + smallgray(count));
             }
@@ -220,12 +221,22 @@ public class Edelweis {
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "todos.htm"))) {
             htmlUtf8.append("<h3>Todos</h3>\n");
             htmlUtf8.append("<pre>\n");
-            for (ParserText parserText : bulkParser.texts())
-              if (!parserText.todos().isEmpty()) {
-                htmlUtf8.append("<b>" + parserText.file() + "</b>\n");
-                parserText.todosNoXml().forEach(htmlUtf8::appendln);
+            // the todos are listed sorted according to a category
+            Map<String, Map<String, String>> sortedTodos = bulkParser.sortedTodos();
+            for (String category : sortedTodos.keySet()) {
+              htmlUtf8.append("<b>" + "Category: " + category + "</b>\n");
+              Map<String, String> todos = sortedTodos.get(category);
+              for (Entry<String, String> todo : todos.entrySet()) {
+                // the file
+                htmlUtf8.append("<b>" + todo.getKey() + "</b>\n");
+                // the todo
+                htmlUtf8.appendln(todo.getValue());
                 htmlUtf8.appendln();
               }
+              htmlUtf8.appendln();
+              htmlUtf8.appendln();
+            }
+            // --
             htmlUtf8.append("</pre>\n");
           }
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "edits.htm"))) {
