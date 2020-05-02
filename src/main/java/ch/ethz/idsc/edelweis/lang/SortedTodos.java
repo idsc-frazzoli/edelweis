@@ -42,7 +42,7 @@ import java.util.Map;
     // first word after identifier is developer
     String restOfLine = todoLine.substring(identPos, todoLine.length());
     String developer = restOfLine.split(" ")[0];
-    return developer;
+    return developer.replace(",", "");
   }
 
   private static String preConditionLine(String todoLineIn) {
