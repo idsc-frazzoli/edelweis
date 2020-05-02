@@ -2,8 +2,10 @@
 package ch.ethz.idsc.edelweis.prc;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -44,8 +46,16 @@ public class ExtDependencies {
   public Map<String, Long> getAllFrequencySorted() {
     LinkedHashMap<String, Long> sorted = new LinkedHashMap<>();
     collect.entrySet().stream()//
-        .sorted(FrequencySorter.INSTANCE)//
-        .forEach(e -> sorted.put(e.getKey(), e.getValue()));
+        .sorted(new Comparator<Entry<String, Long>>() {
+          @Override
+          public int compare(Entry<String, Long> o1, Entry<String, Long> o2) {
+            if (o1.getValue() < o2.getValue())
+              return 1;
+            if (o1.getValue() > o2.getValue())
+              return -1;
+            return 0;
+          }
+        }).forEach(e -> sorted.put(e.getKey(), e.getValue()));
     return sorted;
   }
 }

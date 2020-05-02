@@ -248,7 +248,7 @@ public class Edelweis {
           try (HtmlUtf8 htmlUtf8 = HtmlUtf8.page(new File(dir, "dependencies.htm"))) {
             ExtDependencies extDependencies = new ExtDependencies(bulkParser);
             Map<String, Long> set = extDependencies.getAllFrequencySorted();
-            htmlUtf8.append("<h3>Dependencies</h3>\n");
+            htmlUtf8.append("<h3>External Dependencies</h3>\n");
             htmlUtf8.append("<pre>\n");
             set.entrySet().forEach(entry -> htmlUtf8.appendln(String.format("%5d %s", entry.getValue(), entry.getKey())));
             htmlUtf8.append("</pre>\n");
